@@ -1,0 +1,29 @@
+
+======================================================================
+NATURE-STYLE ADSORPTION DATA ANALYSIS
+======================================================================
+
+Reading adsorption data...
+
+Plotting analysis...
+成功加载Times New Roman字体
+
+Saved: adsorption_analysis_nature.[png/pdf]
+
+======================================================================
+ADSORPTION ANALYSIS STATISTICS
+======================================================================
+Time range: 0.00 - 19.20 ps
+Coverage range: 0.0125 - 0.0125 atom/Å²
+E_ads_per_O range: -33.69 - -19.35 eV
+
+Last 50% statistics:
+  Time range: 9.60 - 19.20 ps
+  E_ads_per_O average: -32.591 eV
+  E_ads_per_O std: 0.543 eV
+
+Overall statistics:
+  E_ads_per_O average: -31.856 ± 1.540 eV
+======================================================================
+
+Analysis completed successfully!

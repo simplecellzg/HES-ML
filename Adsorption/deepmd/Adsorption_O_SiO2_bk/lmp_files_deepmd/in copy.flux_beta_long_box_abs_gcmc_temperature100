@@ -1,0 +1,123 @@
+# MD relaxation at different temperatures
+# Temperature range: 100, 200, 400, 600, 800, 1000 K
+# Relaxation time: 20 ps
+# Output: {temperature}k.lmp
+
+# ===== Variable definitions =====
+variable dt equal 0.0002           # Timestep 0.2 fs
+variable run_time equal 0.2        # Relaxation time 0.2 ps (注意：这里是0.2 ps，不是20 ps)
+variable run_steps equal ${run_time}/${dt}
+variable seed equal 224456
+
+# Constraint parameters
+variable z_fixwall equal 5.0
+variable z_Si_soft_limit equal 16.5 
+variable Si_wall_k equal 10.0      
+variable z_upwall equal 50.0
+
+# ===== System setup =====
+units metal
+boundary p p p
+atom_style full
+atom_modify map array sort 0 0.0
+
+# ===== Read structure =====
+read_data nve_full.lmp extra/bond/types 2 extra/bond/per/atom 10
+
+# ===== Potential function setup =====
+pair_style deepmd graph_compressed_20241109_clean_2.pb
+pair_coeff * * Si O O
+
+# ===== Bond style setup =====
+bond_style harmonic
+bond_coeff 1 0.0 1.7  # 键类型1: 键能系数=0（因为DeePMD处理相互作用），平衡键长=1.7 Å
+bond_coeff 2 0.0 1.5
+
+# ===== Define atom groups =====
+group Si_atoms type 1
+group O_surface type 2
+group O_adsorbed type 3
+group Si_O_atoms type 1 2
+
+# ===== Create bonds =====
+create_bonds many Si_atoms O_surface 1 1.6 1.8  # Si-O bonds
+# create_bonds many O_surface O_surface 2 1.7 1.7  # O-O bonds if needed
+
+# ===== Neighbor list =====
+neighbor 2.0 bin
+neigh_modify every 1 delay 0 check yes
+
+# ===== Fix bottom atoms =====
+region bottom block INF INF INF INF 0 ${z_fixwall}
+group fixed_atoms region bottom
+fix 1 fixed_atoms setforce 0 0 0
+
+# ===== Si and surface O height constraint (optional) =====
+# fix Si_wall Si_O_atoms wall/harmonic zhi ${z_Si_soft_limit} ${Si_wall_k} 0.0 1.5 units box pbc yes
+
+# ===== Define thermostated region =====
+region thermo_region block INF INF INF INF ${z_fixwall} ${z_upwall}
+group thermo_atoms region thermo_region
+
+# ===== Output settings =====
+thermo 1000
+thermo_style custom step temp pe ke etotal atoms
+thermo_modify lost warn flush yes
+
+# ===== Timestep =====
+timestep ${dt}
+
+# ===== Temperature loop =====
+label temp_loop
+variable temps index 1000
+
+# 键分析计算 - 使用bond/local获取局部键长信息
+compute bond_dist all bond/local dist
+
+# 使用fix ave/histo来统计键长分布
+fix bond_stats all ave/histo 100 10 1000 0.5 3.0 50 c_bond_dist &
+    mode vector ave running overwrite &
+    file bond_histogram_${temps}K.dat
+
+# 修改thermo输出 - 移除无法直接计算的c_bond_ave等
+thermo_style custom step temp pe ke etotal atoms
+
+# Setup NVT ensemble
+fix 2 thermo_atoms nve
+fix 3 thermo_atoms temp/csvr ${temps} ${temps} 0.01 ${seed}
+
+# 详细键信息dump - 输出每个键的长度
+dump bond_detail all local 1000 bonds_${temps}K.dump &
+     index c_bond_dist
+
+print "=========================================="
+print "Starting relaxation at ${temps} K"
+print "=========================================="
+
+# Run relaxation
+run ${run_steps}
+
+# 清理
+unfix bond_stats
+undump bond_detail
+uncompute bond_dist
+
+# Save structure
+write_data ${temps}k.lmp
+
+print "Relaxation at ${temps} K completed"
+print "Structure saved as ${temps}k.lmp"
+print ""
+
+# Unfix thermostats for next temperature
+unfix 2
+unfix 3
+
+# Next temperature
+next temps
+jump SELF temp_loop
+
+print "=========================================="
+print "All temperature relaxations completed!"
+print "Output files: 100k.lmp, 200k.lmp, 400k.lmp, 600k.lmp, 800k.lmp, 1000k.lmp"
+print "=========================================="

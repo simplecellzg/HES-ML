@@ -1,0 +1,35 @@
+variable cut_off        equal 10.0
+
+units metal
+atom_style charge
+read_data ${datafile}
+
+# ---------- 力场与电荷平衡 ----------
+# 设置原子电荷（假设类型1是Si，类型2是O，类型3是H）
+set type 1 charge +2.4          # Si
+set type 2 charge -1.2         # O
+
+
+# 替换deepmd为BKS势函数
+pair_style      hybrid/overlay buck/coul/long ${cut_off} table linear 39901
+pair_coeff    	1 1 buck/coul/long 0.0 1.0 0.0                #No interactions between Si atoms
+pair_coeff   	1 2 buck/coul/long 18003.757200 0.205205 133.538100
+pair_coeff    	2 2 buck/coul/long 1388.773000  0.362319 175.000000  #BKS interaction in PRL 64 1955 (1990)
+pair_modify   	shift yes
+pair_coeff    	1 2 table potential_SiO2.TPF Si-O ${cut_off}
+pair_coeff    	2 2 table potential_SiO2.TPF O-O ${cut_off}   #See the potential file for more information
+
+
+# 添加长程库仑力计算
+kspace_style	pppm  1.0e-4
+ # 根据体系元素调整顺序
+
+neighbor 2.0 bin
+neigh_modify every 1 delay 10 check yes
+
+thermo 1
+thermo_style custom step pe
+thermo_modify format float "%10.5f"
+
+
+run 0

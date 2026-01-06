@@ -1,0 +1,213 @@
+Bond Statistics Summary
+Generated on: 2025-06-07 15:39:42
+Total files processed: 16
+================================================================================
+
+File 1: /public1/home/sch9516/ZG/MTD_3_database_trained_post_result/crystal_parameters_a_b_c/dft_PBE/2000k/cp2k_analysis_results/bond_angle_statistics.txt
+----------------------------------------
+Bond Length Statistics:
+Si-O: Mean = 1.655 Angstrom, Std = 0.083 Angstrom, Count = 432000
+Si-Si: Mean = 3.127 Angstrom, Std = 0.141 Angstrom, Count = 216245
+O-O: Mean = 2.709 Angstrom, Std = 0.183 Angstrom, Count = 709934
+
+Bond Angle Statistics:
+O-Si-O: Mean = 109.2 degrees, Std = 9.7 degrees, Count = 648000
+Si-O-Si: Mean = 144.3 degrees, Std = 13.9 degrees, Count = 216000
+
+================================================================================
+
+File 2: /public1/home/sch9516/ZG/MTD_3_database_trained_post_result/crystal_parameters_a_b_c/dft_PBE/500k/cp2k_analysis_results/bond_angle_statistics.txt
+----------------------------------------
+Bond Length Statistics:
+Si-O: Mean = 1.635 Angstrom, Std = 0.038 Angstrom, Count = 432000
+Si-Si: Mean = 3.053 Angstrom, Std = 0.068 Angstrom, Count = 216000
+O-O: Mean = 2.668 Angstrom, Std = 0.086 Angstrom, Count = 656261
+
+Bond Angle Statistics:
+O-Si-O: Mean = 109.4 degrees, Std = 4.9 degrees, Count = 648000
+Si-O-Si: Mean = 138.7 degrees, Std = 6.6 degrees, Count = 216000
+
+================================================================================
+
+File 3: /public1/home/sch9516/ZG/MTD_3_database_trained_post_result/crystal_parameters_a_b_c/dft_PBE/1500k/cp2k_analysis_results/bond_angle_statistics.txt
+----------------------------------------
+Bond Length Statistics:
+Si-O: Mean = 1.646 Angstrom, Std = 0.07 Angstrom, Count = 432000
+Si-Si: Mean = 3.109 Angstrom, Std = 0.126 Angstrom, Count = 216023
+O-O: Mean = 2.689 Angstrom, Std = 0.154 Angstrom, Count = 689689
+
+Bond Angle Statistics:
+O-Si-O: Mean = 109.2 degrees, Std = 8.4 degrees, Count = 648000
+Si-O-Si: Mean = 143.9 degrees, Std = 13.0 degrees, Count = 216000
+
+================================================================================
+
+File 4: /public1/home/sch9516/ZG/MTD_3_database_trained_post_result/crystal_parameters_a_b_c/dft_PBE/1000k/cp2k_analysis_results/bond_angle_statistics.txt
+----------------------------------------
+Bond Length Statistics:
+Si-O: Mean = 1.64 Angstrom, Std = 0.055 Angstrom, Count = 432000
+Si-Si: Mean = 3.081 Angstrom, Std = 0.1 Angstrom, Count = 216000
+O-O: Mean = 2.685 Angstrom, Std = 0.132 Angstrom, Count = 689210
+
+Bond Angle Statistics:
+O-Si-O: Mean = 109.3 degrees, Std = 6.8 degrees, Count = 648000
+Si-O-Si: Mean = 141.2 degrees, Std = 10.6 degrees, Count = 216000
+
+================================================================================
+
+File 5: /public1/home/sch9516/ZG/MTD_3_database_trained_post_result/crystal_parameters_a_b_c/dp_20241109_clean_2/2000k/lammps_analysis_results/bond_angle_statistics.txt
+----------------------------------------
+Bond Length Statistics:
+Si-O: Mean = 1.654 Angstrom, Std = 0.084 Angstrom, Count = 21599
+Si-Si: Mean = 3.114 Angstrom, Std = 0.14 Angstrom, Count = 10802
+O-O: Mean = 2.719 Angstrom, Std = 0.191 Angstrom, Count = 36792
+
+Bond Angle Statistics:
+O-Si-O: Mean = 109.2 degrees, Std = 9.6 degrees, Count = 32397
+Si-O-Si: Mean = 143.1 degrees, Std = 14.0 degrees, Count = 10799
+
+================================================================================
+
+File 6: /public1/home/sch9516/ZG/MTD_3_database_trained_post_result/crystal_parameters_a_b_c/dp_20241109_clean_2/500k/lammps_analysis_results/bond_angle_statistics.txt
+----------------------------------------
+Bond Length Statistics:
+Si-O: Mean = 1.636 Angstrom, Std = 0.039 Angstrom, Count = 21600
+Si-Si: Mean = 3.04 Angstrom, Std = 0.065 Angstrom, Count = 10800
+O-O: Mean = 3.252 Angstrom, Std = 0.553 Angstrom, Count = 84286
+
+Bond Angle Statistics:
+O-Si-O: Mean = 109.4 degrees, Std = 4.7 degrees, Count = 32400
+Si-O-Si: Mean = 136.9 degrees, Std = 5.9 degrees, Count = 10800
+
+================================================================================
+
+File 7: /public1/home/sch9516/ZG/MTD_3_database_trained_post_result/crystal_parameters_a_b_c/dp_20241109_clean_2/1500k/lammps_analysis_results/bond_angle_statistics.txt
+----------------------------------------
+Bond Length Statistics:
+Si-O: Mean = 1.647 Angstrom, Std = 0.071 Angstrom, Count = 21600
+Si-Si: Mean = 3.101 Angstrom, Std = 0.124 Angstrom, Count = 10803
+O-O: Mean = 2.702 Angstrom, Std = 0.166 Angstrom, Count = 35687
+
+Bond Angle Statistics:
+O-Si-O: Mean = 109.2 degrees, Std = 8.4 degrees, Count = 32400
+Si-O-Si: Mean = 142.7 degrees, Std = 12.8 degrees, Count = 10800
+
+================================================================================
+
+File 8: /public1/home/sch9516/ZG/MTD_3_database_trained_post_result/crystal_parameters_a_b_c/dp_20241109_clean_2/1000k/lammps_analysis_results/bond_angle_statistics.txt
+----------------------------------------
+Bond Length Statistics:
+Si-O: Mean = 1.642 Angstrom, Std = 0.056 Angstrom, Count = 21600
+Si-Si: Mean = 3.062 Angstrom, Std = 0.096 Angstrom, Count = 10800
+O-O: Mean = 2.684 Angstrom, Std = 0.125 Angstrom, Count = 34315
+
+Bond Angle Statistics:
+O-Si-O: Mean = 109.3 degrees, Std = 6.7 degrees, Count = 32400
+Si-O-Si: Mean = 138.6 degrees, Std = 9.3 degrees, Count = 10800
+
+================================================================================
+
+File 9: /public1/home/sch9516/ZG/MTD_3_database_trained_post_result/crystal_parameters_a_b_c/lmp_bks/2000K/lammps_analysis_results/bond_angle_statistics.txt
+----------------------------------------
+Bond Length Statistics:
+Si-O: Mean = 1.621 Angstrom, Std = 0.077 Angstrom, Count = 21600
+Si-Si: Mean = 3.135 Angstrom, Std = 0.124 Angstrom, Count = 10800
+O-O: Mean = 2.643 Angstrom, Std = 0.145 Angstrom, Count = 32975
+
+Bond Angle Statistics:
+O-Si-O: Mean = 109.3 degrees, Std = 8.1 degrees, Count = 32400
+Si-O-Si: Mean = 152.9 degrees, Std = 11.8 degrees, Count = 10800
+
+================================================================================
+
+File 10: /public1/home/sch9516/ZG/MTD_3_database_trained_post_result/crystal_parameters_a_b_c/lmp_bks/500K/lammps_analysis_results/bond_angle_statistics.txt
+----------------------------------------
+Bond Length Statistics:
+Si-O: Mean = 1.607 Angstrom, Std = 0.036 Angstrom, Count = 21600
+Si-Si: Mean = 3.125 Angstrom, Std = 0.062 Angstrom, Count = 10799
+O-O: Mean = 2.621 Angstrom, Std = 0.078 Angstrom, Count = 32401
+
+Bond Angle Statistics:
+O-Si-O: Mean = 109.4 degrees, Std = 4.6 degrees, Count = 32400
+Si-O-Si: Mean = 154.0 degrees, Std = 7.4 degrees, Count = 10800
+
+================================================================================
+
+File 11: /public1/home/sch9516/ZG/MTD_3_database_trained_post_result/crystal_parameters_a_b_c/lmp_bks/1500K/lammps_analysis_results/bond_angle_statistics.txt
+----------------------------------------
+Bond Length Statistics:
+Si-O: Mean = 1.616 Angstrom, Std = 0.066 Angstrom, Count = 21600
+Si-Si: Mean = 3.131 Angstrom, Std = 0.108 Angstrom, Count = 10800
+O-O: Mean = 2.633 Angstrom, Std = 0.127 Angstrom, Count = 32629
+
+Bond Angle Statistics:
+O-Si-O: Mean = 109.3 degrees, Std = 7.2 degrees, Count = 32400
+Si-O-Si: Mean = 153.6 degrees, Std = 11.1 degrees, Count = 10800
+
+================================================================================
+
+File 12: /public1/home/sch9516/ZG/MTD_3_database_trained_post_result/crystal_parameters_a_b_c/lmp_bks/1000K/lammps_analysis_results/bond_angle_statistics.txt
+----------------------------------------
+Bond Length Statistics:
+Si-O: Mean = 1.61 Angstrom, Std = 0.052 Angstrom, Count = 21600
+Si-Si: Mean = 3.128 Angstrom, Std = 0.09 Angstrom, Count = 10800
+O-O: Mean = 2.625 Angstrom, Std = 0.106 Angstrom, Count = 32526
+
+Bond Angle Statistics:
+O-Si-O: Mean = 109.4 degrees, Std = 6.1 degrees, Count = 32400
+Si-O-Si: Mean = 154.5 degrees, Std = 10.0 degrees, Count = 10800
+
+================================================================================
+
+File 13: /public1/home/sch9516/ZG/MTD_3_database_trained_post_result/crystal_parameters_a_b_c/lmp_2015/2000k/lammps_analysis_results/bond_angle_statistics.txt
+----------------------------------------
+Bond Length Statistics:
+Si-O: Mean = 1.612 Angstrom, Std = 0.079 Angstrom, Count = 21600
+Si-Si: Mean = 3.088 Angstrom, Std = 0.107 Angstrom, Count = 10803
+O-O: Mean = 2.622 Angstrom, Std = 0.187 Angstrom, Count = 34051
+
+Bond Angle Statistics:
+O-Si-O: Mean = 108.8 degrees, Std = 11.4 degrees, Count = 32400
+Si-O-Si: Mean = 149.3 degrees, Std = 13.1 degrees, Count = 10800
+
+================================================================================
+
+File 14: /public1/home/sch9516/ZG/MTD_3_database_trained_post_result/crystal_parameters_a_b_c/lmp_2015/500k/lammps_analysis_results/bond_angle_statistics.txt
+----------------------------------------
+Bond Length Statistics:
+Si-O: Mean = 1.58 Angstrom, Std = 0.038 Angstrom, Count = 21600
+Si-Si: Mean = 3.076 Angstrom, Std = 0.053 Angstrom, Count = 10800
+O-O: Mean = 2.575 Angstrom, Std = 0.087 Angstrom, Count = 32413
+
+Bond Angle Statistics:
+O-Si-O: Mean = 109.3 degrees, Std = 5.5 degrees, Count = 32400
+Si-O-Si: Mean = 154.6 degrees, Std = 7.9 degrees, Count = 10800
+
+================================================================================
+
+File 15: /public1/home/sch9516/ZG/MTD_3_database_trained_post_result/crystal_parameters_a_b_c/lmp_2015/1500k/lammps_analysis_results/bond_angle_statistics.txt
+----------------------------------------
+Bond Length Statistics:
+Si-O: Mean = 1.602 Angstrom, Std = 0.068 Angstrom, Count = 21599
+Si-Si: Mean = 3.084 Angstrom, Std = 0.092 Angstrom, Count = 10802
+O-O: Mean = 2.602 Angstrom, Std = 0.158 Angstrom, Count = 33062
+
+Bond Angle Statistics:
+O-Si-O: Mean = 108.9 degrees, Std = 10.0 degrees, Count = 32397
+Si-O-Si: Mean = 150.9 degrees, Std = 12.0 degrees, Count = 10799
+
+================================================================================
+
+File 16: /public1/home/sch9516/ZG/MTD_3_database_trained_post_result/crystal_parameters_a_b_c/lmp_2015/1000k/lammps_analysis_results/bond_angle_statistics.txt
+----------------------------------------
+Bond Length Statistics:
+Si-O: Mean = 1.591 Angstrom, Std = 0.053 Angstrom, Count = 21600
+Si-Si: Mean = 3.079 Angstrom, Std = 0.074 Angstrom, Count = 10800
+O-O: Mean = 2.589 Angstrom, Std = 0.131 Angstrom, Count = 32743
+
+Bond Angle Statistics:
+O-Si-O: Mean = 109.1 degrees, Std = 8.2 degrees, Count = 32400
+Si-O-Si: Mean = 152.7 degrees, Std = 10.3 degrees, Count = 10800
+
+================================================================================
+

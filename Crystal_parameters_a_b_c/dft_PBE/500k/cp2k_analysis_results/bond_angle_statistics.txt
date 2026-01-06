@@ -1,0 +1,8 @@
+Bond Length Statistics:
+Si-O: Mean = 1.635 Angstrom, Std = 0.038 Angstrom, Count = 432000
+Si-Si: Mean = 3.053 Angstrom, Std = 0.068 Angstrom, Count = 216000
+O-O: Mean = 2.668 Angstrom, Std = 0.086 Angstrom, Count = 656261
+
+Bond Angle Statistics:
+O-Si-O: Mean = 109.4 degrees, Std = 4.9 degrees, Count = 648000
+Si-O-Si: Mean = 138.7 degrees, Std = 6.6 degrees, Count = 216000

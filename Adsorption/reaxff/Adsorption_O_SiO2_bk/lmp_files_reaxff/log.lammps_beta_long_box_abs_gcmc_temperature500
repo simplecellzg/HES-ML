@@ -1,0 +1,144 @@
+LAMMPS (12 Jun 2025)
+KOKKOS mode with Kokkos version 4.6.0 is enabled (src/KOKKOS/kokkos.cpp:72)
+  will use up to 1 GPU(s) per node
+  using 1 OpenMP thread(s) per MPI task
+Reading data file ...
+  orthogonal box = (0 0 0) to (98.26 85.096 100)
+  1 by 1 by 1 MPI processor grid
+  reading atoms ...
+  10800 atoms
+  reading velocities ...
+  10800 velocities
+  read_data CPU = 0.087 seconds
+WARNING: Changed valency_val to valency_boc for N (src/REAXFF/reaxff_ffield.cpp:300)
+WARNING: Changed valency_val to valency_boc for X (src/REAXFF/reaxff_ffield.cpp:300)
+3600 atoms in group Si_atoms
+7200 atoms in group O_surface
+0 atoms in group O_adsorbed
+10800 atoms in group Si_O_atoms
+3600 atoms in group fixed_atoms
+7200 atoms in group thermo_atoms
+==========================================
+Starting relaxation at 500 K
+==========================================
+
+CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE
+
+Your simulation uses code contributions which should be cited:
+- pair reaxff command: doi:10.1016/j.parco.2011.08.005
+- fix qeq/reaxff command: doi:10.1016/j.parco.2011.08.005
+The log file lists these citations in BibTeX format.
+
+CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE
+
+Neighbor list info ...
+  update: every = 1 steps, delay = 0 steps, check = yes
+  max neighbors/atom: 2000, page size: 100000
+  master list distance cutoff = 12
+  ghost atom cutoff = 12
+  binsize = 12, bins = 9 8 9
+  2 neighbor lists, perpetual/occasional/extra = 2 0 0
+  (1) pair reaxff/kk, perpetual
+      attributes: half, newton off, ghost, kokkos_device
+      pair build: half/bin/newtoff/ghost/kk/device
+      stencil: full/ghost/bin/3d
+      bin: kk/device
+  (2) fix qeq/reaxff/kk, perpetual
+      attributes: full, newton off, kokkos_device
+      pair build: full/bin/kk/device
+      stencil: full/bin/3d
+      bin: kk/device
+Setting up Verlet run ...
+  Unit style    : metal
+  Current step  : 0
+  Time step     : 0.0002
+Per MPI rank memory allocation (min/avg/max) = 176.6 | 176.6 | 176.6 Mbytes
+   Step          Temp          PotEng         KinEng         TotEng        Atoms   
+         0   497.54651     -1800448.1      694.51537     -1799753.6          10800 
+      1000   337.62439     -1859614.3      471.28323     -1859143            10800 
+      2000   318.17238     -1859844.3      444.13056     -1859400.2          10800 
+      3000   324.16391     -1859913.5      452.49402     -1859461            10800 
+      4000   323.55914     -1859968.3      451.64983     -1859516.7          10800 
+      5000   315.41143     -1859976.9      440.2766      -1859536.7          10800 
+      6000   315.80269     -1859995.7      440.82275     -1859554.9          10800 
+      7000   321.62023     -1860016        448.94335     -1859567            10800 
+      8000   326.15509     -1860046.6      455.27347     -1859591.4          10800 
+      9000   313.69883     -1860056.1      437.88602     -1859618.2          10800 
+     10000   321.03513     -1860080.9      448.12662     -1859632.8          10800 
+     11000   318.97645     -1860107.4      445.25295     -1859662.1          10800 
+     12000   309.76977     -1860107.8      432.40151     -1859675.4          10800 
+     13000   317.39565     -1860124.2      443.04634     -1859681.1          10800 
+     14000   323.62296     -1860165.2      451.73892     -1859713.5          10800 
+     15000   311.48136     -1860164.9      434.79069     -1859730.1          10800 
+     16000   311.35992     -1860165.7      434.62118     -1859731.1          10800 
+     17000   321.8329      -1860178.1      449.2402      -1859728.9          10800 
+     18000   315.18992     -1860212.1      439.9674      -1859772.2          10800 
+     19000   313.4412      -1860195.5      437.5264      -1859758            10800 
+     20000   325.84293     -1860162.9      454.83773     -1859708.1          10800 
+     21000   322.34349     -1860220.1      449.95293     -1859770.1          10800 
+     22000   314.50504     -1860228.4      439.01139     -1859789.4          10800 
+     23000   304.36707     -1860155.7      424.86        -1859730.8          10800 
+     24000   326.72611     -1860188.7      456.07054     -1859732.7          10800 
+     25000   317.59149     -1860245.3      443.3197      -1859801.9          10800 
+     26000   318.07138     -1860218.1      443.98957     -1859774.1          10800 
+     27000   315.47343     -1860177.9      440.36315     -1859737.5          10800 
+     28000   330.77297     -1860213.7      461.71947     -1859752            10800 
+     29000   320.9907      -1860255.7      448.06459     -1859807.6          10800 
+     30000   308.3907      -1860196.7      430.4765      -1859766.3          10800 
+     31000   316.28617     -1860170        441.49764     -1859728.5          10800 
+     32000   324.33366     -1860245.1      452.73097     -1859792.3          10800 
+     33000   315.26602     -1860264.2      440.07363     -1859824.1          10800 
+     34000   297.78141     -1860177.7      415.6672      -1859762            10800 
+     35000   323.56074     -1860188.2      451.65207     -1859736.6          10800 
+     36000   334.80976     -1860263.1      467.35435     -1859795.7          10800 
+     37000   308.15661     -1860228.6      430.14975     -1859798.5          10800 
+     38000   304.74367     -1860169.7      425.38569     -1859744.3          10800 
+     39000   328.95562     -1860198.3      459.18268     -1859739.2          10800 
+     40000   320.54449     -1860266.8      447.44175     -1859819.4          10800 
+     41000   304.31959     -1860217.8      424.79373     -1859793            10800 
+     42000   310.28845     -1860166        433.12554     -1859732.9          10800 
+     43000   329.01049     -1860227.1      459.25927     -1859767.9          10800 
+     44000   316.15814     -1860273.1      441.31892     -1859831.8          10800 
+     45000   307.25028     -1860193.5      428.88462     -1859764.6          10800 
+     46000   320.72701     -1860179.4      447.69651     -1859731.7          10800 
+     47000   332.56509     -1860263.6      464.22105     -1859799.4          10800 
+     48000   312.72122     -1860263.4      436.52139     -1859826.9          10800 
+     49000   301.72987     -1860185.5      421.17878     -1859764.3          10800 
+     50000   327.27562     -1860204.7      456.83759     -1859747.8          10800 
+Loop time of 337.061 on 1 procs for 50000 steps with 10800 atoms
+
+Performance: 2.563 ns/day, 9.363 hours/ns, 148.341 timesteps/s, 1.602 Matom-step/s
+94.5% CPU use with 1 MPI tasks x 1 OpenMP threads
+
+MPI task timing breakdown:
+Section |  min time  |  avg time  |  max time  |%varavg| %total
+---------------------------------------------------------------
+Pair    | 250.61     | 250.61     | 250.61     |   0.0 | 74.35
+Neigh   | 0.11603    | 0.11603    | 0.11603    |   0.0 |  0.03
+Comm    | 13.401     | 13.401     | 13.401     |   0.0 |  3.98
+Output  | 0.081756   | 0.081756   | 0.081756   |   0.0 |  0.02
+Modify  | 69.615     | 69.615     | 69.615     |   0.0 | 20.65
+Other   |            | 3.234      |            |       |  0.96
+
+Nlocal:          10800 ave       10800 max       10800 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+Nghost:          19376 ave       19376 max       19376 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+Neighs:      2.495e+06 ave   2.495e+06 max   2.495e+06 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+FullNghs:   4.5377e+06 ave  4.5377e+06 max  4.5377e+06 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+
+Total # of neighbors = 4537696
+Ave neighs/atom = 420.15704
+Neighbor list builds = 38
+Dangerous builds = 0
+System init for write_data ...
+Relaxation at 500 K completed
+Structure saved as 500k.lmp
+
+==========================================
+All temperature relaxations completed!
+Output files: 100k.lmp, 200k.lmp, 400k.lmp, 600k.lmp, 800k.lmp, 1000k.lmp
+==========================================
+Total wall time: 0:05:37

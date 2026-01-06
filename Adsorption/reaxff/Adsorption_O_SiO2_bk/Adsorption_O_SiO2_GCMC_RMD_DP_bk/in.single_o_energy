@@ -1,0 +1,79 @@
+# 计算单个氧原子在ReaxFF和DeepMD势函数下的总势能
+# 输出结果到文件
+
+# ===== 创建输出文件 =====
+print "# 单个氧原子能量计算结果" file single_O_energy.dat
+print "# 势函数类型  能量(eV)" file single_O_energy.dat
+
+# ========== Part 1: ReaxFF计算 ==========
+print "========== 计算ReaxFF势函数下的单个氧原子能量 =========="
+
+# 基本设置
+units metal
+atom_style charge
+boundary p p p
+
+# 创建单个氧原子
+lattice sc 10.0
+region box block 0 1 0 1 0 1
+create_box 1 box
+create_atoms 1 single 0.5 0.5 0.5
+mass 1 15.999
+
+# ReaxFF势函数设置
+pair_style reaxff NULL
+pair_coeff * * ffield.reax O
+
+# ReaxFF电荷平衡
+fix 1 all qeq/reaxff 1 0.0 10.0 1e-6 reaxff
+
+# 计算能量
+thermo_style custom step pe
+run 0
+
+# 保存ReaxFF结果
+variable pe_reaxff equal pe
+print "ReaxFF单个氧原子能量: ${pe_reaxff} eV"
+print "ReaxFF ${pe_reaxff}" append single_O_energy.dat
+
+# 清空系统
+clear
+
+# ========== Part 2: DeepMD计算 ==========
+print "========== 计算DeepMD势函数下的单个氧原子能量 =========="
+
+# 基本设置
+units metal
+atom_style atomic
+boundary p p p
+
+# 创建单个氧原子
+lattice sc 10.0
+region box block 0 1 0 1 0 1
+create_box 1 box
+create_atoms 1 single 0.5 0.5 0.5
+mass 1 15.999
+
+# DeepMD势函数设置
+pair_style deepmd graph_compressed_20241109_clean_2.pb
+pair_coeff * * O
+
+# 计算能量
+thermo_style custom step pe
+run 0
+
+# 保存DeepMD结果
+variable pe_deepmd equal pe
+print "DeepMD单个氧原子能量: ${pe_deepmd} eV"
+print "DeepMD ${pe_deepmd}" append single_O_energy.dat
+
+# ========== 输出总结 ==========
+print ""
+print "========== 计算完成 =========="
+print "结果已保存到 single_O_energy.dat 文件"
+print ""
+print "总结："
+print "ReaxFF单个氧原子能量: ${pe_reaxff} eV"
+print "DeepMD单个氧原子能量: ${pe_deepmd} eV"
+print "能量差异: $(v_pe_deepmd-v_pe_reaxff) eV"
+print "============================="

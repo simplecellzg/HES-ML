@@ -1,0 +1,8 @@
+Frame,Energy(kcal/mol),Source
+frame_006,0.0,./reaction1/dp_20241109_clean_2/energies.csv
+frame_005,-2.4969800000544637,./reaction1/dp_20241109_clean_2/energies.csv
+frame_004,-2.213149999966845,./reaction1/dp_20241109_clean_2/energies.csv
+frame_003,-0.8454100000672042,./reaction1/dp_20241109_clean_2/energies.csv
+frame_002,-0.30181000009179115,./reaction1/dp_20241109_clean_2/energies.csv
+frame_001,-5.9609400001354516,./reaction1/dp_20241109_clean_2/energies.csv
+frame_000,-51.79795000003651,./reaction1/dp_20241109_clean_2/energies.csv

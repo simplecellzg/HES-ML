@@ -1,0 +1,109 @@
+LAMMPS (2 Aug 2023)
+OMP_NUM_THREADS environment is not set. Defaulting to 1 thread. (src/comm.cpp:98)
+  using 1 OpenMP thread(s) per MPI task
+Loaded 1 plugins from /public1/home/sch9516/software/deepmd-kit/lib/deepmd_lmp
+units real
+atom_style charge
+read_data ${datafile}
+read_data frame_005.lmp
+Reading data file ...
+  orthogonal box = (0 0 0) to (19.623 16.948 22)
+  1 by 1 by 1 MPI processor grid
+  reading atoms ...
+  257 atoms
+  read_data CPU = 0.002 seconds
+
+# ---------- 力场与电荷平衡 ----------
+pair_style reaxff NULL
+pair_coeff * * ../ffield.reax Si O H
+WARNING: Changed valency_val to valency_boc for N (src/REAXFF/reaxff_ffield.cpp:296)
+WARNING: Changed valency_val to valency_boc for X (src/REAXFF/reaxff_ffield.cpp:296)
+fix gsi_qeq all qeq/reaxff 1 0 10 1e-6 reaxff
+ # 根据体系元素调整顺序
+
+neighbor 2.0 bin
+neigh_modify every 1 delay 10 check yes
+
+thermo 1
+thermo_style custom step pe
+thermo_modify format float "%10.5f"
+
+
+run 0
+
+CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE
+
+Your simulation uses code contributions which should be cited:
+
+- pair reaxff command: doi:10.1016/j.parco.2011.08.005
+
+@Article{Aktulga12,
+ author = {H. M. Aktulga and J. C. Fogarty and S. A. Pandit and A. Y. Grama},
+ title = {Parallel Reactive Molecular Dynamics: {N}umerical Methods and Algorithmic Techniques},
+ journal = {Parallel Computing},
+ year =    2012,
+ volume =  38,
+ number =  {4--5},
+ pages =   {245--259}
+}
+
+- fix qeq/reaxff command: doi:10.1016/j.parco.2011.08.005
+
+@Article{Aktulga12,
+ author = {H. M. Aktulga and J. C. Fogarty and S. A. Pandit and A. Y. Grama},
+ title = {Parallel Reactive Molecular Dynamics: {N}umerical Methods and Algorithmic Techniques},
+ journal = {Parallel Computing},
+ year =    2012,
+ volume =  38,
+ pages =   {245--259}
+}
+
+CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE
+
+WARNING: No fixes with time integration, atoms won't move (src/verlet.cpp:60)
+Neighbor list info ...
+  update: every = 1 steps, delay = 10 steps, check = yes
+  max neighbors/atom: 2000, page size: 100000
+  master list distance cutoff = 12
+  ghost atom cutoff = 12
+  binsize = 6, bins = 4 3 4
+  2 neighbor lists, perpetual/occasional/extra = 2 0 0
+  (1) pair reaxff, perpetual
+      attributes: half, newton off, ghost
+      pair build: half/bin/newtoff/ghost
+      stencil: full/ghost/bin/3d
+      bin: standard
+  (2) fix qeq/reaxff, perpetual, copy from (1)
+      attributes: half, newton off
+      pair build: copy
+      stencil: none
+      bin: none
+Per MPI rank memory allocation (min/avg/max) = 46.32 | 46.32 | 46.32 Mbytes
+   Step         PotEng    
+         0  -39902.53528
+Loop time of 1.542e-06 on 1 procs for 0 steps with 257 atoms
+
+64.9% CPU use with 1 MPI tasks x 1 OpenMP threads
+
+MPI task timing breakdown:
+Section |  min time  |  avg time  |  max time  |%varavg| %total
+---------------------------------------------------------------
+Pair    | 0          | 0          | 0          |   0.0 |  0.00
+Neigh   | 0          | 0          | 0          |   0.0 |  0.00
+Comm    | 0          | 0          | 0          |   0.0 |  0.00
+Output  | 0          | 0          | 0          |   0.0 |  0.00
+Modify  | 0          | 0          | 0          |   0.0 |  0.00
+Other   |            | 1.542e-06  |            |       |100.00
+
+Nlocal:            257 ave         257 max         257 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+Nghost:           2457 ave        2457 max        2457 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+Neighs:          58064 ave       58064 max       58064 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+
+Total # of neighbors = 58064
+Ave neighs/atom = 225.92996
+Neighbor list builds = 0
+Dangerous builds = 0
+Total wall time: 0:00:00

@@ -1,0 +1,1 @@
+sed -n '317,327p' log.lammps | awk '{sum8+=$8; sum9+=$9; sum10+=$10} END {print "晶体参数最后1ps平均分别是: \na(Å):", sum8/NR, "\nb(Å):", sum9/NR, "\nc(Å):", sum10/NR}'

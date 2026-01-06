@@ -1,0 +1,63 @@
+variable        NSTEPS          equal 50000
+variable        THERMO_FREQ     equal 10
+variable        DUMP_FREQ       equal 10
+variable        TEMP            equal 500
+variable        TAU_T           equal 0.100000
+variable        cut_off         equal 10.0
+
+units           metal
+boundary        p p p
+atom_style      charge          # 从atomic改为charge以支持BKS势函数
+
+neighbor        1.0 bin
+neigh_modify    every 1 delay 0 check yes page 100000 one 10000
+
+read_data       sio2_surf_o_slab_240_addH_opt_modified_charges.lmp
+
+# 设置原子电荷（假设类型1是Si，类型2是O，类型3是H）
+set type 1 charge +2.4          # Si
+set type 2 charge -1.2         # O
+
+
+# 替换deepmd为BKS势函数
+pair_style      hybrid/overlay buck/coul/long ${cut_off} table linear 39901
+pair_coeff    	1 1 buck/coul/long 0.0 1.0 0.0                #No interactions between Si atoms
+pair_coeff   	1 2 buck/coul/long 18003.757200 0.205205 133.538100
+pair_coeff    	2 2 buck/coul/long 1388.773000  0.362319 175.000000  #BKS interaction in PRL 64 1955 (1990)
+pair_modify   	shift yes
+pair_coeff    	1 2 table potential_SiO2.TPF Si-O ${cut_off}
+pair_coeff    	2 2 table potential_SiO2.TPF O-O ${cut_off}   #See the potential file for more information
+
+
+# 添加长程库仑力计算
+kspace_style	pppm  1.0e-4
+
+fix             PLUMED  all plumed plumedfile plumed_SiO_surf_reconstruct.dat outfile PLUMED.OUT
+
+# 可选：添加负载平衡（如果模拟规模较大）
+# comm_style tiled 
+# fix balance all balance 1000 1.1 rcb
+
+thermo_style    custom step temp pe ke etotal press vol lx ly lz xy xz yz
+thermo          ${THERMO_FREQ}
+thermo_modify lost ignore flush yes
+
+dump            1 all custom ${DUMP_FREQ} SiO2.lammpstrj id element x y z
+dump_modify     1 element Si O
+dump            2 all xyz ${DUMP_FREQ} SiO2.lammpstrj.xyz 
+dump_modify     2 element Si O
+
+dump            3 all xyz ${NSTEPS} dump.lastframe.xyz
+dump_modify     3 element Si O
+
+velocity        all create ${TEMP} 743574
+fix             1 all nvt temp ${TEMP} ${TEMP} ${TAU_T}
+
+region          bottom block INF INF INF INF INF 3.6 
+group           bottom region bottom
+fix             2 bottom setforce 0 0 0
+velocity        bottom set 0 0 0
+
+timestep        0.000200
+run_style       verlet
+run             ${NSTEPS}

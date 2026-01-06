@@ -1,0 +1,17 @@
+File_Path,BondLength_O-O_Mean,BondLength_Si-O_Mean,BondLength_Si-Si_Mean,BondAngle_O-Si-O_Mean,BondAngle_Si-O-Si_Mean
+dft_PBE/1000k/cp2k_analysis_results/bond_angle_statistics.txt,2.685,1.64,3.081,109.3,141.2
+dft_PBE/1500k/cp2k_analysis_results/bond_angle_statistics.txt,2.689,1.646,3.109,109.2,143.9
+dft_PBE/2000k/cp2k_analysis_results/bond_angle_statistics.txt,2.709,1.655,3.127,109.2,144.3
+dft_PBE/500k/cp2k_analysis_results/bond_angle_statistics.txt,2.668,1.635,3.053,109.4,138.7
+dp_20241109_clean_2/1000k/lammps_analysis_results/bond_angle_statistics.txt,2.684,1.642,3.062,109.3,138.6
+dp_20241109_clean_2/1500k/lammps_analysis_results/bond_angle_statistics.txt,2.702,1.647,3.101,109.2,142.7
+dp_20241109_clean_2/2000k/lammps_analysis_results/bond_angle_statistics.txt,2.719,1.654,3.114,109.2,143.1
+dp_20241109_clean_2/500k/lammps_analysis_results/bond_angle_statistics.txt,3.252,1.636,3.04,109.4,136.9
+lmp_2015/1000k/lammps_analysis_results/bond_angle_statistics.txt,2.589,1.591,3.079,109.1,152.7
+lmp_2015/1500k/lammps_analysis_results/bond_angle_statistics.txt,2.602,1.602,3.084,108.9,150.9
+lmp_2015/2000k/lammps_analysis_results/bond_angle_statistics.txt,2.622,1.612,3.088,108.8,149.3
+lmp_2015/500k/lammps_analysis_results/bond_angle_statistics.txt,2.575,1.58,3.076,109.3,154.6
+lmp_bks/1000K/lammps_analysis_results/bond_angle_statistics.txt,2.625,1.61,3.128,109.4,154.5
+lmp_bks/1500K/lammps_analysis_results/bond_angle_statistics.txt,2.633,1.616,3.131,109.3,153.6
+lmp_bks/2000K/lammps_analysis_results/bond_angle_statistics.txt,2.643,1.621,3.135,109.3,152.9
+lmp_bks/500K/lammps_analysis_results/bond_angle_statistics.txt,2.621,1.607,3.125,109.4,154.0

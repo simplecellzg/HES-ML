@@ -1,0 +1,518 @@
+# Adsorption energy calculation: comparing nve.lmp and gcmc_last.lmp
+# Using MD relaxation to calculate adsorption energy
+# Modified version: Using only reaxff energy (excluding soft potential)
+# 
+# Date: 2024-12-26
+# Version: 4.0 - Using reaxff energy only
+
+# ===== Variable definitions =====
+variable T equal 1000               # Temperature (K)
+variable dt equal 0.0002           # Timestep 0.2 fs
+variable run_time_r equal 2.0      # Relaxation time 2.0 ps
+variable run_steps_r equal ${run_time_r}/${dt}
+variable run_time equal 20.0       # Relaxation time 20.0 ps
+variable run_steps equal ${run_time}/${dt}
+variable seed equal 224456
+
+# Constraint parameters (same as gcmc)
+variable surface_buffer equal 1.0   
+variable O_O_cutoff equal 1.5      
+variable Si_O_cutoff equal 2.0     
+variable z_max_limit equal 19.5    # Maximum height limit
+variable z_Si_max_limit equal 20.0 # Si atom maximum height limit
+variable z_Si_soft_limit equal 15.0 # Si atom soft limit (start applying constraint)
+variable z_O_soft_limit equal 17.5 # O atom soft limit
+variable Si_wall_k equal 10.0     # Si constraint force constant (eV/Å²)
+variable z_fixwall equal 5.0
+
+# Single oxygen atom potential energy (from DFT or potential function)
+# variable E_O_single equal -429.7080686243063  # eV deepmd
+variable E_O_single equal -2.3640219362704  # eV reaxff
+
+shell mkdir energy_data
+shell mkdir data
+
+# ===== System setup =====
+units metal
+boundary p p p
+atom_style charge
+atom_modify map array sort 0 0.0
+
+# ========== Part 1: Process nve.lmp as reference ==========
+print "========== Processing reference structure nve.lmp =========="
+
+# Read reference structure
+read_data nve.lmp
+
+
+pair_style hybrid/overlay reaxff NULL soft 3.2
+pair_coeff * * reaxff ffield.reax Si O O
+
+# fix gsi_qeq all qeq/reaxff 1 0  10 1e-6 reaxff  
+fix gsi_qeq all qeq/reaxff 10 0 10 1e-5 reaxff maxiter 400
+
+# soft势用于类型3-3的排斥
+pair_coeff 3 3 soft 200.0  # A=100.0 kcal/mol
+# soft势: E = A * [1 + cos(π*r/rc)] for r < rc
+
+#　　# Potential function setup
+#　　pair_style hybrid/overlay deepmd graph_compressed_20241109_clean_2.pb soft 3.2
+#　　
+#　　# DeepMD应用于所有原子
+#　　pair_coeff * * deepmd Si O O
+#　　
+#　　# soft势用于类型3-3的排斥
+#　　pair_coeff 3 3 soft 200.0  # A=200.0
+
+# Neighbor list
+neighbor 2.0 bin
+neigh_modify every 1 delay 0 check yes
+
+# Define atom groups
+group Si_atoms type 1
+group O_surface type 2
+group O_adsorbed type 3
+group Si_O_atoms type 1 2 # Surface atoms that need constraints
+group O_atoms type 2 3
+group all_atoms type 1 2 3
+
+# ===== Compute box dimensions =====
+compute pos_x all property/atom x
+compute pos_y all property/atom y
+compute pos_z all property/atom z
+
+compute box_xlo all reduce min c_pos_x
+compute box_xhi all reduce max c_pos_x
+compute box_ylo all reduce min c_pos_y
+compute box_yhi all reduce max c_pos_y
+compute box_zlo all reduce min c_pos_z
+compute box_zhi all reduce max c_pos_z
+
+run 0
+
+variable xlo equal c_box_xlo
+variable xhi equal c_box_xhi
+variable ylo equal c_box_ylo
+variable yhi equal c_box_yhi
+variable zlo equal c_box_zlo
+variable zhi equal c_box_zhi
+
+print "===== Box dimensions ====="
+print "x: ${xlo} - ${xhi}"
+print "y: ${ylo} - ${yhi}"
+print "z: ${zlo} - ${zhi}"
+print "========================"
+
+# Count initial atoms for reference
+variable n_atoms_ref_init equal atoms
+variable n_O_ref_init equal count(O_atoms)
+variable n_O_ads_ref_init equal count(O_adsorbed)
+variable n_Si_ref_init equal count(Si_atoms)
+
+# Calculate surface area for coverage
+variable surface_area equal (${xhi}-${xlo})*(${yhi}-${ylo})
+variable coverage_ref_init equal ${n_O_ads_ref_init}/${surface_area}
+
+print "Reference initial state: Total atoms = ${n_atoms_ref_init}, O atoms = ${n_O_ref_init}, Type3 O = ${n_O_ads_ref_init}, Si atoms = ${n_Si_ref_init}"
+print "Initial type3 O coverage: ${coverage_ref_init} atoms/Å²"
+
+# ===== Fix bottom atoms =====
+region bottom block INF INF INF INF 0 ${z_fixwall}
+group fixed_atoms region bottom
+fix 1 fixed_atoms setforce 0 0 0
+
+# ===== Si and surface O height constraint =====
+fix compress_down Si_O_atoms indent 100.0 plane z ${z_Si_soft_limit} hi
+
+print "===== Si and surface O height constraints set ====="
+print "Soft limit height: ${z_Si_soft_limit} Å"
+print "Applied to type 1 and 2 atoms only"
+print "================================================="
+
+# Setup NVT ensemble (csvr thermostat)
+variable z_upwall equal 50.0
+region thermo_region block INF INF INF INF ${z_fixwall} ${z_upwall}
+group thermo_atoms region thermo_region
+fix 2 thermo_atoms nve
+fix 3 thermo_atoms temp/csvr ${T} ${T} 0.01 ${seed}
+
+# Energy calculation - MODIFIED to separate reaxff and soft contributions
+compute pe_reaxff all pair reaxff
+compute pe_soft all pair soft
+compute pe_total all pe
+compute pe_atom all pe/atom
+variable e_reaxff equal c_pe_reaxff
+variable e_soft equal c_pe_soft
+variable e_total equal pe
+
+# ===== Add energy output to file - reference structure =====
+fix energy_out_ref all print 1000 "$(step) $(temp) $(pe) $(ke) $(etotal) $(v_e_reaxff) $(v_e_soft) $(v_e_total) $(atoms) $(count(O_adsorbed)) $(v_coverage_ref_init)" &
+    file energy_data/energy_reference.dat screen no &
+    title "# Step Temp PE KE Etotal E_reaxff E_soft E_total Atoms Type3_O Coverage"
+
+# ===== Add trajectory output - reference structure =====
+dump dump_ref all custom 1000 zz_reference_trajectory.lammpstrj id type x y z
+dump_modify dump_ref sort id element Si O O
+
+# Output settings
+thermo 1000
+thermo_style custom step temp pe ke etotal v_e_reaxff v_e_soft v_e_total atoms
+thermo_modify lost warn flush yes
+
+timestep ${dt}
+
+print "Starting reference structure relaxation..."
+run ${run_steps_r}
+
+# Get final energy as reference - USING reaxff ENERGY
+variable energy_ref equal ${e_reaxff}  # Changed to use reaxff energy only
+variable n_atoms_ref equal atoms
+variable n_O_ref equal count(O_atoms)
+variable n_O_ads_ref equal count(O_adsorbed)
+variable n_Si_ref equal count(Si_atoms)
+variable coverage_ref equal ${n_O_ads_ref}/${surface_area}
+
+print "Reference structure relaxation completed"
+print "Final reaxff energy: ${energy_ref} eV"
+print "Final soft energy: ${e_soft} eV"
+print "Final total energy: ${e_total} eV"
+print "Total atoms: ${n_atoms_ref}"
+print "O atoms: ${n_O_ref}"
+print "Type3 O atoms: ${n_O_ads_ref}"
+print "Type3 O coverage: ${coverage_ref} atoms/Å²"
+print "Si atoms: ${n_Si_ref}"
+
+# SAVE REFERENCE VALUES TO FILE AS LAMMPS VARIABLE COMMANDS
+print "variable ref_atoms equal ${n_atoms_ref}" file ref_values.txt
+print "variable ref_O equal ${n_O_ref}" append ref_values.txt
+print "variable ref_O_ads equal ${n_O_ads_ref}" append ref_values.txt
+print "variable ref_Si equal ${n_Si_ref}" append ref_values.txt
+print "variable ref_energy equal ${energy_ref}" append ref_values.txt
+print "variable ref_coverage equal ${coverage_ref}" append ref_values.txt
+print "variable surface_area equal ${surface_area}" append ref_values.txt
+
+# Save reference structure information
+write_data reference_final.lmp
+
+# Close first trajectory file and energy output
+undump dump_ref
+unfix energy_out_ref
+
+clear
+
+# ========== Part 2: Process gcmc_last.lmp ==========
+print ""
+print "========== Processing target structure gcmc_last.lmp =========="
+
+# System re-initialization
+units metal
+boundary p p p
+atom_style charge
+atom_modify map array sort 0 0.0
+
+# READ BACK REFERENCE VALUES FROM FILE
+include ref_values.txt
+
+print "Loaded reference values from file:"
+print "  Reference atoms: ${ref_atoms}"
+print "  Reference O atoms: ${ref_O}"
+print "  Reference type3 O atoms: ${ref_O_ads}"
+print "  Reference coverage: ${ref_coverage} atoms/Å²"
+print "  Reference Si atoms: ${ref_Si}"
+print "  Reference reaxff energy: ${ref_energy} eV"
+print "  Surface area: ${surface_area} Å²"
+
+# Read target structure
+read_data gcmc_last.lmp
+
+pair_style hybrid/overlay reaxff NULL soft 3.2
+pair_coeff * * reaxff ffield.reax Si O O
+
+# fix gsi_qeq all qeq/reaxff 1 0  10 1e-6 reaxff  
+fix gsi_qeq all qeq/reaxff 10 0 10 1e-5 reaxff maxiter 400
+
+# soft势用于类型3-3的排斥
+pair_coeff 3 3 soft 200.0  # A=100.0 kcal/mol
+# soft势: E = A * [1 + cos(π*r/rc)] for r < rc
+
+
+# # Potential function setup
+# pair_style hybrid/overlay deepmd graph_compressed_20241109_clean_2.pb soft 3.2
+# 
+# # DeepMD应用于所有原子
+# pair_coeff * * deepmd Si O O
+# 
+# # soft势用于类型3-3的排斥
+# pair_coeff 3 3 soft 200.0  # A=200.0
+
+# Neighbor list
+neighbor 2.0 bin
+neigh_modify every 1 delay 0 check yes
+
+# Define atom groups
+group Si_atoms type 1
+group O_surface type 2
+group O_adsorbed type 3
+group Si_O_atoms type 1 2 # Surface atoms that need constraints
+group O_atoms type 2 3
+group all_atoms type 1 2 3
+
+# Count initial atoms for target
+variable n_atoms_target_init equal atoms
+variable n_O_target_init equal count(O_atoms)
+variable n_O_ads_target_init equal count(O_adsorbed)
+variable n_Si_target_init equal count(Si_atoms)
+
+# Calculate initial coverage for target
+variable coverage_target_init equal ${n_O_ads_target_init}/${surface_area}
+
+print "Target initial state: Total atoms = ${n_atoms_target_init}, O atoms = ${n_O_target_init}, Type3 O = ${n_O_ads_target_init}, Si atoms = ${n_Si_target_init}"
+print "Initial type3 O coverage: ${coverage_target_init} atoms/Å²"
+
+# Check initial difference
+variable diff_atoms_init equal ${n_atoms_target_init}-${ref_atoms}
+variable diff_O_init equal ${n_O_target_init}-${ref_O}
+variable diff_O_ads_init equal ${n_O_ads_target_init}-${ref_O_ads}
+variable diff_coverage_init equal ${coverage_target_init}-${ref_coverage}
+print "Initial difference from reference: Total atoms = ${diff_atoms_init}, O atoms = ${diff_O_init}, Type3 O = ${diff_O_ads_init}"
+print "Coverage difference: ${diff_coverage_init} atoms/Å²"
+
+# Check z coordinates distribution
+compute zcoord all property/atom z
+compute zmax all reduce max c_zcoord
+compute zmin all reduce min c_zcoord
+run 0
+variable zmax_val equal c_zmax
+variable zmin_val equal c_zmin
+print "Initial z-coordinate range: [${zmin_val}, ${zmax_val}]"
+
+# Count atoms above z_max_limit before simulation
+region initial_above block INF INF INF INF ${z_max_limit} INF units box
+group initial_atoms_above region initial_above
+variable n_initial_above equal count(initial_atoms_above)
+print "Atoms initially above z = ${z_max_limit}: ${n_initial_above}"
+group initial_atoms_above delete
+region initial_above delete
+
+# ===== Fix bottom atoms =====
+region bottom2 block INF INF INF INF 0 ${z_fixwall}
+group fixed_atoms region bottom2
+fix 1 fixed_atoms setforce 0 0 0
+
+# ===== Si and surface O height constraint =====
+fix compress_down Si_O_atoms indent 200.0 plane z ${z_Si_soft_limit} hi
+fix O_wall O_adsorbed indent 200.0 plane z ${z_O_soft_limit} hi
+
+print "===== Si and surface O height constraints set ====="
+print "Soft limit height: ${z_Si_soft_limit} Å"
+print "Applied to type 1 and 2 atoms only"
+print "================================================="
+
+# Setup NVT ensemble (csvr thermostat)
+variable z_upwall equal 50.0
+region thermo_region block INF INF INF INF ${z_fixwall} ${z_upwall}
+group thermo_atoms region thermo_region
+fix 2 thermo_atoms nve
+fix 3 thermo_atoms temp/csvr ${T} ${T} 0.01 ${seed}
+
+# ===== Coordination number calculations =====
+compute coord_OO all coord/atom cutoff ${O_O_cutoff} 2*2 2*3 3*3
+compute coord_SiO all coord/atom cutoff ${Si_O_cutoff} 1*2 1*3
+
+# Energy calculation - MODIFIED to separate reaxff and soft contributions
+compute pe_reaxff all pair reaxff
+compute pe_soft all pair soft
+compute pe_total all pe
+compute pe_atom all pe/atom
+variable e_reaxff equal c_pe_reaxff
+variable e_soft equal c_pe_soft
+variable e_total equal pe
+
+# ===== Variables for real-time adsorption energy calculation - USING reaxff ENERGY =====
+variable n_O_current equal count(O_atoms)
+variable n_O_ads_current equal count(O_adsorbed)
+variable n_O_ads_added equal v_n_O_ads_current-${ref_O_ads}
+variable coverage_current equal v_n_O_ads_current/${surface_area}
+variable coverage_added equal v_n_O_ads_added/${surface_area}
+variable delta_E equal v_e_reaxff-${ref_energy}  # Changed to use reaxff energy
+variable E_O_contrib equal v_n_O_ads_added*${E_O_single}
+variable E_ads equal v_delta_E-v_E_O_contrib
+variable E_ads_per_O equal v_E_ads/v_n_O_ads_added
+
+# ===== Add energy and adsorption energy output to file =====
+fix energy_out_target all print 1000 &
+    "$(step) $(temp) $(pe) $(ke) $(etotal) $(v_e_reaxff) $(v_e_soft) $(v_e_total) $(atoms) $(v_n_O_ads_current) $(v_n_O_ads_added) $(v_coverage_current) $(v_coverage_added) $(v_delta_E) $(v_E_O_contrib) $(v_E_ads) $(v_E_ads_per_O)" &
+    file energy_data/energy_adsorption.dat screen no & 
+    title "# Step Temp PE KE Etotal E_reaxff E_soft E_total Atoms Type3_O Type3_O_added Coverage Coverage_added Delta_E E_O_contrib E_ads E_ads_per_O"
+
+# ===== Add trajectory output - target structure =====
+dump dump_target all custom 1000 zz_target_trajectory.lammpstrj id type x y z c_pe_atom c_coord_OO[*] c_coord_SiO[*]
+dump_modify dump_target sort id element Si O O
+
+# Output settings
+thermo 1000
+thermo_style custom step temp pe ke etotal v_e_reaxff v_e_soft v_e_total atoms v_n_O_ads_current v_n_O_ads_added v_coverage_current v_E_ads v_E_ads_per_O
+thermo_modify lost warn flush yes
+
+timestep ${dt}
+
+print "Starting target structure relaxation (including atom deletion for type 3 only)..."
+
+variable total_deleted equal 0
+variable nloop equal ${run_steps}/1000
+variable iloop loop ${nloop}
+
+label delete_loop
+  # Run 1000 steps
+  run 1000
+  
+  # Check current z range
+  variable zmax_current equal c_zmax
+  print "Current max z-coordinate: ${zmax_current}"
+  
+  # Delete atoms above limit
+  region above_limit block INF INF INF INF ${z_max_limit} INF units box
+  group atoms_above region above_limit
+  variable n_above equal count(atoms_above)
+  
+  if "${n_above} > 0" then &
+    "print 'WARNING: Found ${n_above} atoms above ${z_max_limit} A, deleting...'" &
+    "variable total_deleted equal ${total_deleted}+${n_above}" &
+    "delete_atoms group atoms_above compress yes" &
+    "print 'Deleted ${n_above} atoms. Total deleted so far: ${total_deleted}'"
+  
+  group atoms_above delete
+  region above_limit delete
+  
+  next iloop
+jump SELF delete_loop
+
+# Get final results - USING reaxff ENERGY
+variable n_atoms_final equal atoms
+variable n_O_final equal count(O_atoms)
+variable n_O_ads_final equal count(O_adsorbed)
+variable n_Si_final equal count(Si_atoms)
+variable energy_final equal ${e_reaxff}  # Changed to use reaxff energy
+variable energy_soft_final equal ${e_soft}
+variable energy_total_final equal ${e_total}
+variable coverage_final equal ${n_O_ads_final}/${surface_area}
+
+# Calculate actual added type3 O atoms
+variable n_O_ads_actual_added equal ${n_O_ads_final}-${ref_O_ads}
+variable n_atoms_diff equal ${n_atoms_final}-${ref_atoms}
+variable coverage_change equal ${coverage_final}-${ref_coverage}
+
+print ""
+print "========== Adsorption Energy Calculation (reaxff only) =========="
+print "Reference structure (relaxed nve.lmp):"
+print "  Total atoms: ${ref_atoms}"
+print "  O atoms: ${ref_O}"
+print "  Type3 O atoms: ${ref_O_ads}"
+print "  Coverage: ${ref_coverage} atoms/Å²"
+print "  Si atoms: ${ref_Si}"
+print "  Final reaxff energy: ${ref_energy} eV"
+print ""
+print "Target structure (relaxed gcmc_last.lmp):"
+print "  Initial atoms: ${n_atoms_target_init}"
+print "  Final atoms: ${n_atoms_final}"
+print "  Total atoms deleted (type3 only): ${total_deleted}"
+print "  O atoms: ${n_O_final}"
+print "  Type3 O atoms: ${n_O_ads_final}"
+print "  Coverage: ${coverage_final} atoms/Å²"
+print "  Si atoms: ${n_Si_final}"
+print "  Final reaxff energy: ${energy_final} eV"
+print "  Final soft energy: ${energy_soft_final} eV"
+print "  Final total energy: ${energy_total_final} eV"
+print ""
+print "Differences:"
+print "  Total atom difference: ${n_atoms_diff}"
+print "  Type3 O atom difference: ${n_O_ads_actual_added}"
+print "  Coverage change: ${coverage_change} atoms/Å²"
+print "  Surface area: ${surface_area} Å²"
+
+# Final adsorption energy calculation - USING reaxff ENERGY
+variable delta_E_final equal ${energy_final}-${ref_energy}
+variable E_O_contribution equal ${n_O_ads_actual_added}*${E_O_single}
+variable E_ads_total equal ${delta_E_final}-${E_O_contribution}
+
+# Safe average adsorption energy calculation
+if "${n_O_ads_actual_added} > 0" then &
+  "variable E_ads_per_O_final equal ${E_ads_total}/${n_O_ads_actual_added}" &
+else &
+  "variable E_ads_per_O_final equal 0.0" &
+  "print 'WARNING: No type 3 oxygen atoms added!'"
+
+print ""
+print "Energy calculation (reaxff only):"
+print "  System reaxff energy change: ${delta_E_final} eV"
+print "  O atom contribution: ${E_O_contribution} eV (${n_O_ads_actual_added} × ${E_O_single})"
+print "  Total adsorption energy: ${E_ads_total} eV"
+
+if "${n_O_ads_actual_added} > 0" then &
+  "print '  Average adsorption energy: ${E_ads_per_O_final} eV/O'"
+
+# Output results to file
+print "# Adsorption energy calculation results (reaxff energy only)" file energy_data/adsorption_energy_reaxff.txt
+print "# Date: 2024-12-26" append energy_data/adsorption_energy_reaxff.txt
+print "# Reference structure: nve.lmp" append energy_data/adsorption_energy_reaxff.txt
+print "# Target structure: gcmc_last.lmp" append energy_data/adsorption_energy_reaxff.txt
+print "# Relaxation time: ${run_time} ps" append energy_data/adsorption_energy_reaxff.txt
+print "# Temperature: ${T} K" append energy_data/adsorption_energy_reaxff.txt
+print "# Single O atom energy: ${E_O_single} eV" append energy_data/adsorption_energy_reaxff.txt
+print "# Surface area: ${surface_area} Å²" append energy_data/adsorption_energy_reaxff.txt
+print "# Energy calculation: reaxff only (excluding soft potential)" append energy_data/adsorption_energy_reaxff.txt
+print "#" append energy_data/adsorption_energy_reaxff.txt
+print "# Reference structure (after relaxation)" append energy_data/adsorption_energy_reaxff.txt
+print "Total atoms: ${ref_atoms}" append energy_data/adsorption_energy_reaxff.txt
+print "O atoms: ${ref_O}" append energy_data/adsorption_energy_reaxff.txt
+print "Type3 O atoms: ${ref_O_ads}" append energy_data/adsorption_energy_reaxff.txt
+print "Type3 O coverage: ${ref_coverage} atoms/Å²" append energy_data/adsorption_energy_reaxff.txt
+print "Si atoms: ${ref_Si}" append energy_data/adsorption_energy_reaxff.txt
+print "Final reaxff energy: ${ref_energy} eV" append energy_data/adsorption_energy_reaxff.txt
+print "#" append energy_data/adsorption_energy_reaxff.txt
+print "# Target structure (after relaxation)" append energy_data/adsorption_energy_reaxff.txt
+print "Initial atoms: ${n_atoms_target_init}" append energy_data/adsorption_energy_reaxff.txt
+print "Initial type3 O atoms: ${n_O_ads_target_init}" append energy_data/adsorption_energy_reaxff.txt
+print "Initial type3 O coverage: ${coverage_target_init} atoms/Å²" append energy_data/adsorption_energy_reaxff.txt
+print "Final atoms: ${n_atoms_final}" append energy_data/adsorption_energy_reaxff.txt
+print "Total deleted atoms (type3 only): ${total_deleted}" append energy_data/adsorption_energy_reaxff.txt
+print "O atoms: ${n_O_final}" append energy_data/adsorption_energy_reaxff.txt
+print "Type3 O atoms: ${n_O_ads_final}" append energy_data/adsorption_energy_reaxff.txt
+print "Type3 O coverage: ${coverage_final} atoms/Å²" append energy_data/adsorption_energy_reaxff.txt
+print "Si atoms: ${n_Si_final}" append energy_data/adsorption_energy_reaxff.txt  
+print "Final reaxff energy: ${energy_final} eV" append energy_data/adsorption_energy_reaxff.txt
+print "Final soft energy: ${energy_soft_final} eV" append energy_data/adsorption_energy_reaxff.txt
+print "Final total energy: ${energy_total_final} eV" append energy_data/adsorption_energy_reaxff.txt
+print "#" append energy_data/adsorption_energy_reaxff.txt
+print "# Energy analysis" append energy_data/adsorption_energy_reaxff.txt
+print "Added type3 O atoms: ${n_O_ads_actual_added}" append energy_data/adsorption_energy_reaxff.txt
+print "Coverage change: ${coverage_change} atoms/Å²" append energy_data/adsorption_energy_reaxff.txt
+print "System reaxff energy change: ${delta_E_final} eV" append energy_data/adsorption_energy_reaxff.txt
+print "O atom energy contribution: ${E_O_contribution} eV" append energy_data/adsorption_energy_reaxff.txt
+print "Total adsorption energy: ${E_ads_total} eV" append energy_data/adsorption_energy_reaxff.txt
+
+if "${n_O_ads_actual_added} > 0" then &
+  "print 'Average adsorption energy: ${E_ads_per_O_final} eV/O' append energy_data/adsorption_energy_reaxff.txt" &
+else &
+  "print 'Average adsorption energy: N/A (no type3 O atoms added)' append energy_data/adsorption_energy_reaxff.txt"
+
+# Save final structure
+write_data target_final.lmp
+
+# Close second trajectory file and energy output
+undump dump_target
+unfix energy_out_target
+
+# Clean up temporary file
+shell rm ref_values.txt
+
+print ""
+print "=========================================="
+print "Calculation completed!"
+print "Results saved in: energy_data/adsorption_energy_reaxff.txt"
+print "Reference trajectory: zz_reference_trajectory.lammpstrj"
+print "Target trajectory: zz_target_trajectory.lammpstrj"
+print "Reference energy history: energy_data/energy_reference.dat"
+print "Adsorption energy history: energy_data/energy_adsorption.dat"
+print "Final structure saved in: target_final.lmp"
+print "=========================================="

@@ -1,0 +1,10 @@
+sbatch --gpus=1 submit_gpu_lmp25_beta_long_box_abs_gcmc_temperature100.sh
+sbatch --gpus=1 submit_gpu_lmp25_beta_long_box_abs_gcmc_temperature200.sh
+sbatch --gpus=1 submit_gpu_lmp25_beta_long_box_abs_gcmc_temperature300.sh
+sbatch --gpus=1 submit_gpu_lmp25_beta_long_box_abs_gcmc_temperature400.sh
+sbatch --gpus=1 submit_gpu_lmp25_beta_long_box_abs_gcmc_temperature500.sh
+sbatch --gpus=1 submit_gpu_lmp25_beta_long_box_abs_gcmc_temperature600.sh
+sbatch --gpus=1 submit_gpu_lmp25_beta_long_box_abs_gcmc_temperature700.sh
+sbatch --gpus=1 submit_gpu_lmp25_beta_long_box_abs_gcmc_temperature800.sh
+sbatch --gpus=1 submit_gpu_lmp25_beta_long_box_abs_gcmc_temperature900.sh
+sbatch --gpus=1 submit_gpu_lmp25_beta_long_box_abs_gcmc_temperature1000.sh

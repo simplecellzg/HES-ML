@@ -1,0 +1,265 @@
+LAMMPS (12 Jun 2025)
+KOKKOS mode with Kokkos version 4.6.0 is enabled (src/KOKKOS/kokkos.cpp:72)
+  will use up to 1 GPU(s) per node
+  using 1 OpenMP thread(s) per MPI task
+package kokkos
+package kokkos newton on neigh half
+# MD relaxation at different temperatures
+# Temperature range: 100, 200, 400, 600, 800, 1000 K
+# Relaxation time: 20 ps
+# Output: {temperature}k.lmp
+
+# ===== Variable definitions =====
+variable dt equal 0.0002           # Timestep 0.2 fs
+variable run_time equal 10.0       # Relaxation time 10.0 ps
+variable run_steps equal ${run_time}/${dt}
+variable run_steps equal 10/${dt}
+variable run_steps equal 10/0.0002
+variable seed equal 224456
+
+# Constraint parameters
+variable z_fixwall equal 5.0
+variable z_Si_soft_limit equal 16.5
+variable Si_wall_k equal 10.0
+variable z_upwall equal 50.0
+
+# ===== System setup =====
+units metal
+boundary p p p
+atom_style charge
+atom_modify map array sort 0 0.0
+
+# Read structure
+read_data nve_charge.lmp
+Reading data file ...
+  orthogonal box = (0 0 0) to (98.26 85.096 100)
+  1 by 1 by 1 MPI processor grid
+  reading atoms ...
+  10800 atoms
+  reading velocities ...
+  10800 velocities
+  read_data CPU = 0.109 seconds
+
+# Potential function setup
+# pair_style deepmd graph_compressed_20241109_clean_2.pb
+# pair_coeff * * Si O O
+pair_style reaxff NULL
+pair_coeff * * ffield.reax Si O O
+WARNING: Changed valency_val to valency_boc for N (src/REAXFF/reaxff_ffield.cpp:300)
+WARNING: Changed valency_val to valency_boc for X (src/REAXFF/reaxff_ffield.cpp:300)
+
+fix gsi_qeq all qeq/reaxff 10 0 10 1e-5 reaxff maxiter 400
+# Neighbor list
+neighbor 2.0 bin
+neigh_modify every 1 delay 0 check yes
+
+# Define atom groups
+group Si_atoms type 1
+3600 atoms in group Si_atoms
+group O_surface type 2
+7200 atoms in group O_surface
+group O_adsorbed type 3
+0 atoms in group O_adsorbed
+group Si_O_atoms type 1 2
+10800 atoms in group Si_O_atoms
+
+# ===== Fix bottom atoms =====
+region bottom block INF INF INF INF 0 ${z_fixwall}
+region bottom block INF INF INF INF 0 5
+group fixed_atoms region bottom
+3600 atoms in group fixed_atoms
+fix 1 fixed_atoms setforce 0 0 0
+
+# ===== Si and surface O height constraint (optional) =====
+# fix Si_wall Si_O_atoms wall/harmonic zhi ${z_Si_soft_limit} ${Si_wall_k} 0.0 1.5 units box pbc yes
+
+# ===== Define thermostated region once (outside loop) =====
+region thermo_region block INF INF INF INF ${z_fixwall} ${z_upwall}
+region thermo_region block INF INF INF INF 5 ${z_upwall}
+region thermo_region block INF INF INF INF 5 50
+group thermo_atoms region thermo_region
+7200 atoms in group thermo_atoms
+
+# Output settings
+thermo 1000
+thermo_style custom step temp pe ke etotal atoms
+thermo_modify lost warn flush yes
+
+timestep ${dt}
+timestep 0.0002
+
+# ===== Temperature loop =====
+label temp_loop
+
+variable temps index 1000
+
+# Setup NVT ensemble (csvr thermostat)
+fix 2 thermo_atoms nve
+fix 3 thermo_atoms temp/csvr ${temps} ${temps} 0.01 ${seed}
+fix 3 thermo_atoms temp/csvr 1000 ${temps} 0.01 ${seed}
+fix 3 thermo_atoms temp/csvr 1000 1000 0.01 ${seed}
+fix 3 thermo_atoms temp/csvr 1000 1000 0.01 224456
+
+print "=========================================="
+==========================================
+print "Starting relaxation at ${temps} K"
+Starting relaxation at 1000 K
+print "=========================================="
+==========================================
+
+# Run relaxation
+run ${run_steps}
+run 50000
+
+CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE
+
+Your simulation uses code contributions which should be cited:
+
+- pair reaxff command: doi:10.1016/j.parco.2011.08.005
+
+@Article{Aktulga12,
+ author = {H. M. Aktulga and J. C. Fogarty and S. A. Pandit and A. Y. Grama},
+ title = {Parallel Reactive Molecular Dynamics: {N}umerical Methods and Algorithmic Techniques},
+ journal = {Parallel Computing},
+ year =    2012,
+ volume =  38,
+ number =  {4--5},
+ pages =   {245--259}
+}
+
+- fix qeq/reaxff command: doi:10.1016/j.parco.2011.08.005
+
+@Article{Aktulga12,
+ author = {H. M. Aktulga and J. C. Fogarty and S. A. Pandit and A. Y. Grama},
+ title = {Parallel Reactive Molecular Dynamics: {N}umerical Methods and Algorithmic Techniques},
+ journal = {Parallel Computing},
+ year =    2012,
+ volume =  38,
+ pages =   {245--259}
+}
+
+CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE
+
+Neighbor list info ...
+  update: every = 1 steps, delay = 0 steps, check = yes
+  max neighbors/atom: 2000, page size: 100000
+  master list distance cutoff = 12
+  ghost atom cutoff = 12
+  binsize = 12, bins = 9 8 9
+  2 neighbor lists, perpetual/occasional/extra = 2 0 0
+  (1) pair reaxff/kk, perpetual
+      attributes: half, newton off, ghost, kokkos_device
+      pair build: half/bin/newtoff/ghost/kk/device
+      stencil: full/ghost/bin/3d
+      bin: kk/device
+  (2) fix qeq/reaxff/kk, perpetual
+      attributes: full, newton off, kokkos_device
+      pair build: full/bin/kk/device
+      stencil: full/bin/3d
+      bin: kk/device
+Per MPI rank memory allocation (min/avg/max) = 176.6 | 176.6 | 176.6 Mbytes
+   Step          Temp          PotEng         KinEng         TotEng        Atoms   
+         0   497.54651     -1800448.1      694.51537     -1799753.6                1      1000   664.85388     -1859257.4      928.05643     -1858329.3                2      2000   638.23776     -1859506.1      890.90352     -1858615.2                3      3000   639.57121     -1859571.6      892.76485     -1858678.9                4      4000   619.51207     -1859609        864.76469     -1858744.2                5      5000   629.09579     -1859623.8      878.14243     -1858745.7                6000   495.81481     -1859848.4      692.09813     -1859156.4          10800 
+      7000   514.95793     -1859863.9      718.81963     -1859145.1          10800 
+      8000   513.34239     -1859863.3      716.56453     -1859146.8          10800 
+      9000   508.99598     -1859888.8      710.49746     -1859178.3          10800 
+     10000   506.61669     -1859873.9      707.17626     -1859166.7          10800 
+     11000   508.40048     -1859898.3      709.66622     -1859188.7          10800 
+     12000   509.64107     -1859917.9      711.39794     -1859206.5          10800 
+     13000   514.85674     -1859899.5      718.67838     -1859180.8          10800 
+     14000   507.63714     -1859906.5      708.60068     -1859197.9          10800 
+     15000   505.66186     -1859923.9      705.84344     -1859218.1          10800 
+     16000   495.80081     -1859906.9      692.07859     -1859214.9          10800 
+     17000   503.93794     -1859892.6      703.43704     -1859189.2          10800 
+     18000   508.02209     -1859922.3      709.13803     -1859213.1          10800 
+     19000   518.09348     -1859967.1      723.19649     -1859243.9          10800 
+     20000   506.96013     -1859892.8      707.65567     -1859185.2          10800 
+     21000   511.99002     -1859890.5      714.67679     -1859175.8          10800 
+     22000   524.64957     -1859953.7      732.34801     -1859221.3          10800 
+     23000   494.59948     -1859945.2      690.40167     -1859254.8          10800 
+     24000   502.86596     -1859903        701.94069     -1859201.1          10800 
+     25000   503.23245     -1859900.5      702.45227     -1859198.1          10800 
+     26000   524.50622     -1859978.9      732.14791     -1859246.7          10800 
+     27000   501.4067      -1859968.8      699.90373     -1859268.9          10800 
+     28000   497.76435     -1859899.4      694.81946     -1859204.6          10800 
+     29000   511.4573      -1859914.1      713.93318     -1859200.2          10800 
+     30000   504.41087     -1859967.4      704.0972      -1859263.3          10800 
+     31000   498.42212     -1859978.8      695.73762     -1859283.1          10800 
+     32000   484.90948     -1859891        676.87559     -1859214.1          10800 
+     33000   509.92804     -1859903.9      711.79851     -1859192.1          10800 
+     34000   524.6094      -1860017.1      732.29193     -1859284.8          10800 
+     35000   493.07759     -1859979.2      688.27729     -1859291            10800 
+     36000   506.29457     -1859915.2      706.72662     -1859208.5          10800 
+     37000   518.18869     -1859939.8      723.32939     -1859216.5          10800 
+     38000   520.45137     -1860059.3      726.48782     -1859332.8          10800 
+     39000   496.28942     -1860010.8      692.76063     -1859318.1          10800 
+     40000   486.946       -1859915.5      679.71834     -1859235.8          10800 
+     41000   523.34518     -1859968.6      730.52722     -1859238            10800 
+     42000   525.78178     -1860075.3      733.92843     -1859341.4          10800 
+     43000   487.4404      -1860005.4      680.40845     -1859325            10800 
+     44000   486.79587     -1859907.9      679.50877     -1859228.4          10800 
+     45000   529.34092     -1859970.2      738.89656     -1859231.3          10800 
+     46000   516.42632     -1860074.2      720.86932     -1859353.4          10800 
+     47000   482.59416     -1859983        673.64368     -1859309.4          10800 
+     48000   493.15094     -1859888.9      688.37969     -1859200.5          10800 
+     49000   527.3936      -1859980.1      736.17834     -1859243.9          10800 
+     50000   515.1295      -1860076.1      719.05912     -1859357            10800 
+Loop time of 429.774 on 1 procs for 50000 steps with 10800 atoms
+
+Performance: 2.010 ns/day, 11.938 hours/ns, 116.340 timesteps/s, 1.256 Matom-step/s
+91.0% CPU use with 1 MPI tasks x 1 OpenMP threads
+
+MPI task timing breakdown:
+Section |  min time  |  avg time  |  max time  |%varavg| %total
+---------------------------------------------------------------
+Pair    | 333.43     | 333.43     | 333.43     |   0.0 | 77.58
+Neigh   | 0.20099    | 0.20099    | 0.20099    |   0.0 |  0.05
+Comm    | 15.719     | 15.719     | 15.719     |   0.0 |  3.66
+Output  | 0.072916   | 0.072916   | 0.072916   |   0.0 |  0.02
+Modify  | 76.851     | 76.851     | 76.851     |   0.0 | 17.88
+Other   |            | 3.505      |            |       |  0.82
+
+Nlocal:          10800 ave       10800 max       10800 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+Nghost:          19395 ave       19395 max       19395 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+Neighs:     2.4953e+06 ave  2.4953e+06 max  2.4953e+06 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+FullNghs:  4.53909e+06 ave 4.53909e+06 max 4.53909e+06 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+
+Total # of neighbors = 4539094
+Ave neighs/atom = 420.28648
+Neighbor list builds = 63
+Dangerous builds = 0
+
+# Save structure
+write_data ${temps}k.lmp
+write_data 800k.lmp
+System init for write_data ...
+
+print "Relaxation at ${temps} K completed"
+Relaxation at 800 K completed
+print "Structure saved as ${temps}k.lmp"
+Structure saved as 800k.lmp
+print ""
+
+
+# Unfix thermostats for next temperature
+unfix 2
+unfix 3
+
+# Next temperature
+next temps
+jump SELF temp_loop
+
+print "=========================================="
+==========================================
+print "All temperature relaxations completed!"
+All temperature relaxations completed!
+print "Output files: 100k.lmp, 200k.lmp, 400k.lmp, 600k.lmp, 800k.lmp, 1000k.lmp"
+Output files: 100k.lmp, 200k.lmp, 400k.lmp, 600k.lmp, 800k.lmp, 1000k.lmp
+print "=========================================="
+==========================================
+Total wall time: 0:07:10
+ 0:06:11

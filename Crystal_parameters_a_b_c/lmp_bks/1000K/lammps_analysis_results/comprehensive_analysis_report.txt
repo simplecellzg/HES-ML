@@ -1,0 +1,48 @@
+SiO2 System Structure Analysis Report (LAMMPS)
+==================================================
+
+Analysis Parameters:
+- Total frames: 72
+- Analyzed frames: 50
+- RDF r_max: 6.79 Angstrom
+- Cell parameters: a=15.083, b=17.417, c=16.557 Angstrom
+- Computation time: RDF 4.6s, bonds and angles 33.1s
+
+System Composition:
+- Si atoms: 108
+- O atoms: 216
+- Total atoms: 324
+- Chemical formula ratio Si:O = 1:2.00
+
+RDF First Peak Positions:
+- O-O: 2.60 Angstrom
+- Si-O: 1.61 Angstrom
+- Si-Si: 3.14 Angstrom
+
+Bond Length Statistics:
+- Si-O:
+  * Mean: 1.610 ± 0.052 Angstrom
+  * Range: 1.433 - 1.835 Angstrom
+  * Bonds/frame: 432.0
+- Si-Si:
+  * Mean: 3.128 ± 0.090 Angstrom
+  * Range: 2.746 - 3.441 Angstrom
+  * Bonds/frame: 216.0
+- O-O:
+  * Mean: 2.625 ± 0.106 Angstrom
+  * Range: 2.234 - 3.037 Angstrom
+  * Bonds/frame: 650.5
+
+Bond Angle Statistics:
+- O-Si-O:
+  * Mean: 109.4 ± 6.1 degrees
+  * Range: 88.2 - 134.4 degrees
+  * Angles/frame: 648.0
+- Si-O-Si:
+  * Mean: 154.5 ± 10.0 degrees
+  * Range: 119.3 - 179.8 degrees
+  * Angles/frame: 216.0
+
+Coordination Numbers:
+- Average Si coordination number (O neighbors): 8.00
+- Average O coordination number (Si neighbors): 4.00

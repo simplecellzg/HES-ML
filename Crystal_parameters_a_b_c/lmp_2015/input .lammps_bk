@@ -1,0 +1,42 @@
+variable        NSTEPS          equal 50000000
+variable        THERMO_FREQ     equal 1000
+variable        DUMP_FREQ       equal 1000
+variable        TEMP            equal 2000.000000
+variable        TAU_T           equal 0.100000
+
+units           real
+boundary        p p p
+atom_style      charge
+
+neighbor        1.0 bin
+
+read_data       sio2_crystallisation_si108o216_solid.lmp
+#pair_style      deepmd graph_compressed_20241109_clean_2.pb
+#pair_coeff      * * Si O
+
+velocity all set 0 0 0
+set group all charge 0
+pair_style reaxff NULL safezone 3 
+pair_coeff * * ffield.reax Si O
+fix gsi_qeq all qeq/reaxff 1 0  10 1e-6 reaxff  
+
+
+#fix             PLUMED  all plumed plumedfile plumed_SiO2_crystallisation_melt_3DSF_deeplda2.dat outfile PLUMED.OUT
+
+
+thermo_style    custom step temp pe ke etotal press vol lx ly lz xy xz yz
+thermo          ${THERMO_FREQ}
+thermo_modify lost ignore flush yes
+
+dump            1 all custom ${DUMP_FREQ} SiO2.lammpstrj id element x y z
+dump_modify     1 element Si O
+dump            2 all xyz ${DUMP_FREQ} SiO2.lammpstrj.xyz 
+dump_modify     2 element Si O
+
+velocity        all create ${TEMP} 743574
+#fix             1 all nvt temp ${TEMP} ${TEMP} ${TAU_T}
+fix             1 all npt temp ${TEMP} ${TEMP} ${TAU_T} iso 1.0 1.0 1.0
+
+
+timestep        0.000200
+run             ${NSTEPS}

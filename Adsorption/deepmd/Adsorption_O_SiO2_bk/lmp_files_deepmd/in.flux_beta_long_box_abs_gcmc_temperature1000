@@ -1,0 +1,94 @@
+# MD relaxation at different temperatures
+# Temperature range: 100, 200, 400, 600, 800, 1000 K
+# Relaxation time: 20 ps
+# Output: {temperature}k.lmp
+
+# ===== Variable definitions =====
+variable dt equal 0.0002           # Timestep 0.2 fs
+variable run_time equal 10.0       # Relaxation time 10.0 ps
+variable run_steps equal ${run_time}/${dt}
+variable seed equal 224456
+
+# Constraint parameters
+variable z_fixwall equal 5.0
+variable z_Si_soft_limit equal 16.5 
+variable Si_wall_k equal 10.0      
+variable z_upwall equal 50.0
+
+# ===== System setup =====
+units metal
+boundary p p p
+atom_style atomic
+atom_modify map array sort 0 0.0
+
+# Read structure
+read_data nve_atomic.lmp
+
+# Potential function setup
+pair_style deepmd graph_compressed_20241109_clean_2.pb
+pair_coeff * * Si O O
+
+# Neighbor list
+neighbor 2.0 bin
+neigh_modify every 1 delay 0 check yes
+
+# Define atom groups
+group Si_atoms type 1
+group O_surface type 2
+group O_adsorbed type 3
+group Si_O_atoms type 1 2
+
+# ===== Fix bottom atoms =====
+region bottom block INF INF INF INF 0 ${z_fixwall}
+group fixed_atoms region bottom
+fix 1 fixed_atoms setforce 0 0 0
+
+# ===== Si and surface O height constraint (optional) =====
+# fix Si_wall Si_O_atoms wall/harmonic zhi ${z_Si_soft_limit} ${Si_wall_k} 0.0 1.5 units box pbc yes
+
+# ===== Define thermostated region once (outside loop) =====
+region thermo_region block INF INF INF INF ${z_fixwall} ${z_upwall}
+group thermo_atoms region thermo_region
+
+# Output settings
+thermo 1000
+thermo_style custom step temp pe ke etotal atoms
+thermo_modify lost warn flush yes
+
+timestep ${dt}
+
+# ===== Temperature loop =====
+label temp_loop
+
+variable temps index 1000
+
+# Setup NVT ensemble (csvr thermostat)
+fix 2 thermo_atoms nve
+fix 3 thermo_atoms temp/csvr ${temps} ${temps} 0.01 ${seed}
+
+print "=========================================="
+print "Starting relaxation at ${temps} K"
+print "=========================================="
+
+# Run relaxation
+run ${run_steps}
+
+# Save structure
+write_data ${temps}k.lmp
+
+print "Relaxation at ${temps} K completed"
+print "Structure saved as ${temps}k.lmp"
+print ""
+
+# Unfix thermostats for next temperature
+unfix 2
+unfix 3
+
+# Next temperature
+next temps
+jump SELF temp_loop
+
+print "=========================================="
+print "All temperature relaxations completed!"
+print "Output files: 100k.lmp, 200k.lmp, 400k.lmp, 600k.lmp, 800k.lmp, 1000k.lmp"
+print "=========================================="

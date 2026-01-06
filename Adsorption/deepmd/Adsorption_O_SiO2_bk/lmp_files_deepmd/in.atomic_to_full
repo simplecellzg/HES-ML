@@ -1,0 +1,17 @@
+# convert.in - LAMMPS输入脚本
+units real
+atom_style atomic
+boundary p p p
+
+# 读取atomic格式文件
+read_data nve.lmp
+
+# 转换为full格式
+atom_style full
+
+# 设置默认值
+set type * charge 0.0
+set type * mol 1
+
+# 写出full格式文件
+write_data nve_full.lmp

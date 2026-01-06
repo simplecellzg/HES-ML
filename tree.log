@@ -1,0 +1,1440 @@
+.
+├── Adsorption
+│   ├── deepmd
+│   │   ├── Adsorption_O_SiO2_bk
+│   │   │   ├── Adsorption_O_SiO2_GCMC_RMD_DP_bk
+│   │   │   │   ├── O2_ENERGY_GPU_nature_plot.py
+│   │   │   │   ├── in.flux_beta_long_box_abs_gcmc
+│   │   │   │   ├── nve.lmp
+│   │   │   │   ├── submit_gpu_lmp25_beta_long_box_abs_gcmc.sh
+│   │   │   │   └── submit_reaction_gpu_nature_plot.sh
+│   │   │   ├── Adsorption_O_SiO2_RMD_Relax_DP_bk
+│   │   │   │   ├── O2_ENERGY_GPU_nature_plot.py
+│   │   │   │   ├── O2_ENERGY_GPU_nature_plot_bk.py
+│   │   │   │   ├── in.flux_beta_long_box_abs_gcmc_compare
+│   │   │   │   ├── nve.lmp
+│   │   │   │   ├── submit_gpu_lmp25_beta_long_box_abs_gcmc_compare.sh
+│   │   │   │   └── submit_reaction_gpu_nature_plot.sh
+│   │   │   ├── cp.sh
+│   │   │   ├── gcmc_rmd_batch.py
+│   │   │   ├── gcmc_rmd_batch_modify_plot_sub.py
+│   │   │   ├── gcmc_rmd_jobs_log.txt
+│   │   │   ├── gcmc_rmd_plot_combine.py
+│   │   │   ├── lmp_files_deepmd
+│   │   │   │   ├── 1000k.lmp
+│   │   │   │   ├── 100k.lmp
+│   │   │   │   ├── 200k.lmp
+│   │   │   │   ├── 300k.lmp
+│   │   │   │   ├── 400k.lmp
+│   │   │   │   ├── 500k.lmp
+│   │   │   │   ├── 600k.lmp
+│   │   │   │   ├── 700k.lmp
+│   │   │   │   ├── 800k.lmp
+│   │   │   │   ├── 900k.lmp
+│   │   │   │   ├── bond_histogram_1000K.dat
+│   │   │   │   ├── bonds_1000K.dump
+│   │   │   │   ├── convert.py
+│   │   │   │   ├── cp.sh
+│   │   │   │   ├── final_structure_sio2_10800_atomic.lmp
+│   │   │   │   ├── final_structure_sio2_10800_charge.lmp
+│   │   │   │   ├── in copy.flux_beta_long_box_abs_gcmc_temperature100
+│   │   │   │   ├── in.atomic_to_full
+│   │   │   │   ├── in.flux_beta_long_box_abs_gcmc_temperature
+│   │   │   │   ├── in.flux_beta_long_box_abs_gcmc_temperature100
+│   │   │   │   ├── in.flux_beta_long_box_abs_gcmc_temperature1000
+│   │   │   │   ├── in.flux_beta_long_box_abs_gcmc_temperature200
+│   │   │   │   ├── in.flux_beta_long_box_abs_gcmc_temperature300
+│   │   │   │   ├── in.flux_beta_long_box_abs_gcmc_temperature400
+│   │   │   │   ├── in.flux_beta_long_box_abs_gcmc_temperature500
+│   │   │   │   ├── in.flux_beta_long_box_abs_gcmc_temperature600
+│   │   │   │   ├── in.flux_beta_long_box_abs_gcmc_temperature700
+│   │   │   │   ├── in.flux_beta_long_box_abs_gcmc_temperature800
+│   │   │   │   ├── in.flux_beta_long_box_abs_gcmc_temperature900
+│   │   │   │   ├── log.atomic_to_full
+│   │   │   │   ├── log.lammps
+│   │   │   │   ├── log.lammps_beta_long_box_abs_gcmc_temperature
+│   │   │   │   ├── log.lammps_beta_long_box_abs_gcmc_temperature100
+│   │   │   │   ├── log.lammps_beta_long_box_abs_gcmc_temperature1000
+│   │   │   │   ├── log.lammps_beta_long_box_abs_gcmc_temperature200
+│   │   │   │   ├── log.lammps_beta_long_box_abs_gcmc_temperature300
+│   │   │   │   ├── log.lammps_beta_long_box_abs_gcmc_temperature400
+│   │   │   │   ├── log.lammps_beta_long_box_abs_gcmc_temperature500
+│   │   │   │   ├── log.lammps_beta_long_box_abs_gcmc_temperature600
+│   │   │   │   ├── log.lammps_beta_long_box_abs_gcmc_temperature700
+│   │   │   │   ├── log.lammps_beta_long_box_abs_gcmc_temperature800
+│   │   │   │   ├── log.lammps_beta_long_box_abs_gcmc_temperature900
+│   │   │   │   ├── nve_atomic.lmp
+│   │   │   │   ├── nve_bk.lmp
+│   │   │   │   ├── nve_full.lmp
+│   │   │   │   ├── nvt.lmp
+│   │   │   │   ├── slurm-1013864.out
+│   │   │   │   ├── slurm-1013866.out
+│   │   │   │   ├── slurm-1013867.out
+│   │   │   │   ├── slurm-1013868.out
+│   │   │   │   ├── slurm-1013869.out
+│   │   │   │   ├── slurm-1013870.out
+│   │   │   │   ├── slurm-1013872.out
+│   │   │   │   ├── slurm-1013873.out
+│   │   │   │   ├── slurm-1013874.out
+│   │   │   │   ├── slurm-1013875.out
+│   │   │   │   ├── slurm-982355.out
+│   │   │   │   ├── sub.sh
+│   │   │   │   ├── submit_convert.sh
+│   │   │   │   ├── submit_gpu_lmp25_beta_long_box_abs_gcmc_temperature.sh
+│   │   │   │   ├── submit_gpu_lmp25_beta_long_box_abs_gcmc_temperature100.sh
+│   │   │   │   ├── submit_gpu_lmp25_beta_long_box_abs_gcmc_temperature1000.sh
+│   │   │   │   ├── submit_gpu_lmp25_beta_long_box_abs_gcmc_temperature200.sh
+│   │   │   │   ├── submit_gpu_lmp25_beta_long_box_abs_gcmc_temperature300.sh
+│   │   │   │   ├── submit_gpu_lmp25_beta_long_box_abs_gcmc_temperature400.sh
+│   │   │   │   ├── submit_gpu_lmp25_beta_long_box_abs_gcmc_temperature500.sh
+│   │   │   │   ├── submit_gpu_lmp25_beta_long_box_abs_gcmc_temperature600.sh
+│   │   │   │   ├── submit_gpu_lmp25_beta_long_box_abs_gcmc_temperature700.sh
+│   │   │   │   ├── submit_gpu_lmp25_beta_long_box_abs_gcmc_temperature800.sh
+│   │   │   │   └── submit_gpu_lmp25_beta_long_box_abs_gcmc_temperature900.sh
+│   │   │   ├── mv.sh
+│   │   │   ├── rmd_relax_batch.py
+│   │   │   ├── rmd_relax_batch_modify_plot_sub.py
+│   │   │   ├── rmd_relax_jobs.txt
+│   │   │   ├── rmd_relax_plot_combine.py
+│   │   │   ├── submit.sh
+│   │   │   ├── submit_gcmc_rmd_nature_plot.sh
+│   │   │   ├── submit_rmd_relax_nature_plot.sh
+│   │   │   ├── test_mu.py
+│   │   │   └── times-new-roman
+│   │   │       └── times.ttf
+│   │   └── Combined
+│   │       ├── Combined_RMD_Relax_plot
+│   │       │   ├── Combined_RMD_Relax_analysis.pdf
+│   │       │   ├── Combined_RMD_Relax_analysis.png
+│   │       │   ├── all_individual_data_points.dat
+│   │       │   ├── averaged_statistics_data.dat
+│   │       │   ├── averaged_time_series_data.dat
+│   │       │   └── combined_statistics_summary.txt
+│   │       ├── rmd_relax_plot_combine.py
+│   │       └── submit_rmd_relax_nature_plot.sh
+│   └── reaxff
+│       ├── Adsorption_O_SiO2_bk
+│       │   ├── Adsorption_O_SiO2_GCMC_RMD_DP_bk
+│       │   │   ├── O2_ENERGY_GPU_nature_plot.py
+│       │   │   ├── ffield.reax
+│       │   │   ├── in.flux
+│       │   │   ├── in.flux_beta_long_box_abs_gcmc_reaxff
+│       │   │   ├── in.single_o_energy
+│       │   │   ├── lmp_atom2charge.sh
+│       │   │   ├── lmp_atom2charge_bk.sh
+│       │   │   ├── nve.lmp
+│       │   │   ├── nve_charge.lmp
+│       │   │   ├── o2_output_nature_plot.dat
+│       │   │   ├── single_O_energy.dat
+│       │   │   ├── submit_gpu_lmp25_beta_long_box_abs_gcmc.sh
+│       │   │   ├── submit_gpu_lmp25_single_o_energy.sh
+│       │   │   └── submit_reaction_gpu_nature_plot.sh
+│       │   ├── Adsorption_O_SiO2_RMD_Relax_DP_bk
+│       │   │   ├── O2_ENERGY_GPU_nature_plot.py
+│       │   │   ├── O2_ENERGY_GPU_nature_plot_bk.py
+│       │   │   ├── ffield.reax
+│       │   │   ├── in.flux_beta_long_box_abs_gcmc_compare_reaxff
+│       │   │   ├── nve.lmp
+│       │   │   ├── nve_charge.lmp
+│       │   │   ├── o2_output_nature_plot.dat
+│       │   │   ├── reference_final.lmp
+│       │   │   ├── submit_gpu_lmp25_beta_long_box_abs_gcmc_compare.sh
+│       │   │   ├── submit_reaction_gpu_nature_plot.sh
+│       │   │   └── target_final.lmp
+│       │   ├── cp.sh
+│       │   ├── gcmc_rmd_batch.py
+│       │   ├── gcmc_rmd_batch_modify_plot_sub.py
+│       │   ├── gcmc_rmd_jobs_log.txt
+│       │   ├── gcmc_rmd_plot_combine.py
+│       │   ├── lmp_files_reaxff
+│       │   │   ├── 1000k.lmp
+│       │   │   ├── 100k.lmp
+│       │   │   ├── 200k.lmp
+│       │   │   ├── 300k.lmp
+│       │   │   ├── 400k.lmp
+│       │   │   ├── 500k.lmp
+│       │   │   ├── 600k.lmp
+│       │   │   ├── 700k.lmp
+│       │   │   ├── 800k.lmp
+│       │   │   ├── 900k.lmp
+│       │   │   ├── bond_histogram_1000K.dat
+│       │   │   ├── bonds_1000K.dump
+│       │   │   ├── convert.py
+│       │   │   ├── cp.sh
+│       │   │   ├── ffield.reax
+│       │   │   ├── final_structure_sio2_10800_atomic.lmp
+│       │   │   ├── final_structure_sio2_10800_charge.lmp
+│       │   │   ├── in copy.flux_beta_long_box_abs_gcmc_temperature100
+│       │   │   ├── in.atomic_to_full
+│       │   │   ├── in.flux_beta_long_box_abs_gcmc_temperature
+│       │   │   ├── in.flux_beta_long_box_abs_gcmc_temperature100
+│       │   │   ├── in.flux_beta_long_box_abs_gcmc_temperature1000
+│       │   │   ├── in.flux_beta_long_box_abs_gcmc_temperature200
+│       │   │   ├── in.flux_beta_long_box_abs_gcmc_temperature300
+│       │   │   ├── in.flux_beta_long_box_abs_gcmc_temperature400
+│       │   │   ├── in.flux_beta_long_box_abs_gcmc_temperature500
+│       │   │   ├── in.flux_beta_long_box_abs_gcmc_temperature600
+│       │   │   ├── in.flux_beta_long_box_abs_gcmc_temperature700
+│       │   │   ├── in.flux_beta_long_box_abs_gcmc_temperature800
+│       │   │   ├── in.flux_beta_long_box_abs_gcmc_temperature900
+│       │   │   ├── log.atomic_to_full
+│       │   │   ├── log.lammps
+│       │   │   ├── log.lammps_beta_long_box_abs_gcmc_temperature
+│       │   │   ├── log.lammps_beta_long_box_abs_gcmc_temperature100
+│       │   │   ├── log.lammps_beta_long_box_abs_gcmc_temperature1000
+│       │   │   ├── log.lammps_beta_long_box_abs_gcmc_temperature200
+│       │   │   ├── log.lammps_beta_long_box_abs_gcmc_temperature300
+│       │   │   ├── log.lammps_beta_long_box_abs_gcmc_temperature400
+│       │   │   ├── log.lammps_beta_long_box_abs_gcmc_temperature500
+│       │   │   ├── log.lammps_beta_long_box_abs_gcmc_temperature600
+│       │   │   ├── log.lammps_beta_long_box_abs_gcmc_temperature700
+│       │   │   ├── log.lammps_beta_long_box_abs_gcmc_temperature800
+│       │   │   ├── log.lammps_beta_long_box_abs_gcmc_temperature900
+│       │   │   ├── nve.lmp
+│       │   │   ├── nve_charge.lmp
+│       │   │   ├── nve_charge_bk.lmp
+│       │   │   ├── nve_full.lmp
+│       │   │   ├── nvt.lmp
+│       │   │   ├── slurm-1013828.out
+│       │   │   ├── slurm-1013831.out
+│       │   │   ├── slurm-1013832.out
+│       │   │   ├── slurm-1013833.out
+│       │   │   ├── slurm-1013834.out
+│       │   │   ├── slurm-1013835.out
+│       │   │   ├── slurm-1013837.out
+│       │   │   ├── slurm-1013839.out
+│       │   │   ├── slurm-1013840.out
+│       │   │   ├── slurm-1013841.out
+│       │   │   ├── sub.sh
+│       │   │   ├── submit_convert.sh
+│       │   │   ├── submit_gpu_lmp25_beta_long_box_abs_gcmc.sh
+│       │   │   ├── submit_gpu_lmp25_beta_long_box_abs_gcmc_temperature.sh
+│       │   │   ├── submit_gpu_lmp25_beta_long_box_abs_gcmc_temperature100.sh
+│       │   │   ├── submit_gpu_lmp25_beta_long_box_abs_gcmc_temperature1000.sh
+│       │   │   ├── submit_gpu_lmp25_beta_long_box_abs_gcmc_temperature200.sh
+│       │   │   ├── submit_gpu_lmp25_beta_long_box_abs_gcmc_temperature300.sh
+│       │   │   ├── submit_gpu_lmp25_beta_long_box_abs_gcmc_temperature400.sh
+│       │   │   ├── submit_gpu_lmp25_beta_long_box_abs_gcmc_temperature500.sh
+│       │   │   ├── submit_gpu_lmp25_beta_long_box_abs_gcmc_temperature600.sh
+│       │   │   ├── submit_gpu_lmp25_beta_long_box_abs_gcmc_temperature700.sh
+│       │   │   ├── submit_gpu_lmp25_beta_long_box_abs_gcmc_temperature800.sh
+│       │   │   └── submit_gpu_lmp25_beta_long_box_abs_gcmc_temperature900.sh
+│       │   ├── mv.sh
+│       │   ├── nve_atomic.lmp
+│       │   ├── nve_charge.lmp
+│       │   ├── rmd_relax_batch.py
+│       │   ├── rmd_relax_batch_modify_plot_sub.py
+│       │   ├── rmd_relax_jobs.txt
+│       │   ├── rmd_relax_plot_combine.py
+│       │   ├── submit.sh
+│       │   ├── submit_gcmc_rmd_nature_plot.sh
+│       │   ├── submit_rmd_relax_nature_plot.sh
+│       │   ├── test_mu.py
+│       │   └── times-new-roman
+│       │       └── times.ttf
+│       └── Combined
+│           ├── Combined_RMD_Relax_plot
+│           │   ├── Combined_RMD_Relax_analysis.pdf
+│           │   ├── Combined_RMD_Relax_analysis.png
+│           │   ├── all_individual_data_points.dat
+│           │   ├── averaged_statistics_data.dat
+│           │   ├── averaged_time_series_data.dat
+│           │   └── combined_statistics_summary.txt
+│           ├── rmd_relax_plot_combine.py
+│           └── submit_rmd_relax_nature_plot.sh
+├── Crystal_parameters_a_b_c
+│   ├── RDF_combine
+│   │   ├── BKS_1000K_rdf_O_O.dat
+│   │   ├── BKS_1000K_rdf_Si_O.dat
+│   │   ├── BKS_1000K_rdf_Si_Si.dat
+│   │   ├── BKS_1500K_rdf_O_O.dat
+│   │   ├── BKS_1500K_rdf_Si_O.dat
+│   │   ├── BKS_1500K_rdf_Si_Si.dat
+│   │   ├── BKS_2000K_rdf_O_O.dat
+│   │   ├── BKS_2000K_rdf_Si_O.dat
+│   │   ├── BKS_2000K_rdf_Si_Si.dat
+│   │   ├── BKS_500K_rdf_O_O.dat
+│   │   ├── BKS_500K_rdf_Si_O.dat
+│   │   ├── BKS_500K_rdf_Si_Si.dat
+│   │   ├── DeePMD_1000K_rdf_O_O.dat
+│   │   ├── DeePMD_1000K_rdf_Si_O.dat
+│   │   ├── DeePMD_1000K_rdf_Si_Si.dat
+│   │   ├── DeePMD_1500K_rdf_O_O.dat
+│   │   ├── DeePMD_1500K_rdf_Si_O.dat
+│   │   ├── DeePMD_1500K_rdf_Si_Si.dat
+│   │   ├── DeePMD_2000K_rdf_O_O.dat
+│   │   ├── DeePMD_2000K_rdf_Si_O.dat
+│   │   ├── DeePMD_2000K_rdf_Si_Si.dat
+│   │   ├── DeePMD_500K_rdf_O_O.dat
+│   │   ├── DeePMD_500K_rdf_Si_O.dat
+│   │   ├── DeePMD_500K_rdf_Si_Si.dat
+│   │   ├── PBE_1000K_rdf_O_O.dat
+│   │   ├── PBE_1000K_rdf_Si_O.dat
+│   │   ├── PBE_1000K_rdf_Si_Si.dat
+│   │   ├── PBE_1500K_rdf_O_O.dat
+│   │   ├── PBE_1500K_rdf_Si_O.dat
+│   │   ├── PBE_1500K_rdf_Si_Si.dat
+│   │   ├── PBE_2000K_rdf_O_O.dat
+│   │   ├── PBE_2000K_rdf_Si_O.dat
+│   │   ├── PBE_2000K_rdf_Si_Si.dat
+│   │   ├── PBE_500K_rdf_O_O.dat
+│   │   ├── PBE_500K_rdf_Si_O.dat
+│   │   ├── PBE_500K_rdf_Si_Si.dat
+│   │   ├── RDF_comparison_1000K.pdf
+│   │   ├── RDF_comparison_1000K.png
+│   │   ├── RDF_comparison_1500K.pdf
+│   │   ├── RDF_comparison_1500K.png
+│   │   ├── RDF_comparison_2000K.pdf
+│   │   ├── RDF_comparison_2000K.png
+│   │   ├── RDF_comparison_500K.pdf
+│   │   ├── RDF_comparison_500K.png
+│   │   ├── RDF_peaks_1000K.csv
+│   │   ├── RDF_peaks_1500K.csv
+│   │   ├── RDF_peaks_2000K.csv
+│   │   ├── RDF_peaks_500K.csv
+│   │   ├── ReaxFF_1000K_rdf_O_O.dat
+│   │   ├── ReaxFF_1000K_rdf_Si_O.dat
+│   │   ├── ReaxFF_1000K_rdf_Si_Si.dat
+│   │   ├── ReaxFF_1500K_rdf_O_O.dat
+│   │   ├── ReaxFF_1500K_rdf_Si_O.dat
+│   │   ├── ReaxFF_1500K_rdf_Si_Si.dat
+│   │   ├── ReaxFF_2000K_rdf_O_O.dat
+│   │   ├── ReaxFF_2000K_rdf_Si_O.dat
+│   │   ├── ReaxFF_2000K_rdf_Si_Si.dat
+│   │   ├── ReaxFF_500K_rdf_O_O.dat
+│   │   ├── ReaxFF_500K_rdf_Si_O.dat
+│   │   └── ReaxFF_500K_rdf_Si_Si.dat
+│   ├── all_comprehensive_reports_summary.txt
+│   ├── bond_all.csv
+│   ├── bond_all_selected.csv
+│   ├── bond_analysis
+│   │   ├── O-Si-O_bond_angle_vs_temperature.pdf
+│   │   ├── O-Si-O_bond_angle_vs_temperature.png
+│   │   ├── Si-O-Si_bond_angle_vs_temperature.pdf
+│   │   ├── Si-O-Si_bond_angle_vs_temperature.png
+│   │   ├── Si-O_bond_length_vs_temperature.pdf
+│   │   ├── Si-O_bond_length_vs_temperature.png
+│   │   └── bond_length_angle_statistics.csv
+│   ├── bond_lengh_angle_plt.py
+│   ├── bond_lenght_angle.py
+│   ├── bond_statistics_pivot.csv
+│   ├── bond_statistics_summary.csv
+│   ├── bond_statistics_summary.txt
+│   ├── combined_lattice_parameters.pdf
+│   ├── combined_lattice_parameters.png
+│   ├── combined_lattice_parameters_big_font.png
+│   ├── comprehensive_analysis_report_summary.py
+│   ├── comprehensive_reports_key_values.txt
+│   ├── dft_PBE
+│   │   ├── 1000k
+│   │   │   ├── SiO2_crystallisation_melt_3DSF_pbe.inp
+│   │   │   ├── abc_data
+│   │   │   ├── cp2k_analysis_results
+│   │   │   │   ├── bond_angle_O-Si-O.png
+│   │   │   │   ├── bond_angle_Si-O-Si.png
+│   │   │   │   ├── bond_angle_distributions_combined.png
+│   │   │   │   ├── bond_angle_statistics.txt
+│   │   │   │   ├── bond_angles_O-Si-O.dat
+│   │   │   │   ├── bond_angles_Si-O-Si.dat
+│   │   │   │   ├── bond_length_O-O.png
+│   │   │   │   ├── bond_length_Si-O.png
+│   │   │   │   ├── bond_length_Si-Si.png
+│   │   │   │   ├── bond_lengths_O-O.dat
+│   │   │   │   ├── bond_lengths_Si-O.dat
+│   │   │   │   ├── bond_lengths_Si-Si.dat
+│   │   │   │   ├── comprehensive_analysis_report.txt
+│   │   │   │   ├── rdf_O_O.dat
+│   │   │   │   ├── rdf_O_O.png
+│   │   │   │   ├── rdf_Si_O.dat
+│   │   │   │   ├── rdf_Si_O.png
+│   │   │   │   ├── rdf_Si_Si.dat
+│   │   │   │   ├── rdf_Si_Si.png
+│   │   │   │   └── rdf_all.png
+│   │   │   ├── get_last_1ps_abc.sh
+│   │   │   ├── rdf.py
+│   │   │   ├── sio2_crystallisation_si108o216_solid.xyz
+│   │   │   ├── submit_pbe.sh
+│   │   │   └── submit_rdf.sh
+│   │   ├── 1500k
+│   │   │   ├── SiO2_crystallisation_melt_3DSF_pbe.inp
+│   │   │   ├── abc_data
+│   │   │   ├── cp2k_analysis_results
+│   │   │   │   ├── bond_angle_O-Si-O.png
+│   │   │   │   ├── bond_angle_Si-O-Si.png
+│   │   │   │   ├── bond_angle_distributions_combined.png
+│   │   │   │   ├── bond_angle_statistics.txt
+│   │   │   │   ├── bond_angles_O-Si-O.dat
+│   │   │   │   ├── bond_angles_Si-O-Si.dat
+│   │   │   │   ├── bond_length_O-O.png
+│   │   │   │   ├── bond_length_Si-O.png
+│   │   │   │   ├── bond_length_Si-Si.png
+│   │   │   │   ├── bond_lengths_O-O.dat
+│   │   │   │   ├── bond_lengths_Si-O.dat
+│   │   │   │   ├── bond_lengths_Si-Si.dat
+│   │   │   │   ├── comprehensive_analysis_report.txt
+│   │   │   │   ├── rdf_O_O.dat
+│   │   │   │   ├── rdf_O_O.png
+│   │   │   │   ├── rdf_Si_O.dat
+│   │   │   │   ├── rdf_Si_O.png
+│   │   │   │   ├── rdf_Si_Si.dat
+│   │   │   │   ├── rdf_Si_Si.png
+│   │   │   │   └── rdf_all.png
+│   │   │   ├── get_last_1ps_abc.sh
+│   │   │   ├── rdf.py
+│   │   │   ├── sio2_crystallisation_si108o216_solid.xyz
+│   │   │   ├── submit_pbe.sh
+│   │   │   └── submit_rdf.sh
+│   │   ├── 2000k
+│   │   │   ├── SiO2_crystallisation_melt_3DSF_pbe.inp
+│   │   │   ├── abc_data
+│   │   │   ├── cp2k_analysis_results
+│   │   │   │   ├── bond_angle_O-Si-O.png
+│   │   │   │   ├── bond_angle_Si-O-Si.png
+│   │   │   │   ├── bond_angle_distributions_combined.png
+│   │   │   │   ├── bond_angle_statistics.txt
+│   │   │   │   ├── bond_angles_O-Si-O.dat
+│   │   │   │   ├── bond_angles_Si-O-Si.dat
+│   │   │   │   ├── bond_length_O-O.png
+│   │   │   │   ├── bond_length_Si-O.png
+│   │   │   │   ├── bond_length_Si-Si.png
+│   │   │   │   ├── bond_lengths_O-O.dat
+│   │   │   │   ├── bond_lengths_Si-O.dat
+│   │   │   │   ├── bond_lengths_Si-Si.dat
+│   │   │   │   ├── comprehensive_analysis_report.txt
+│   │   │   │   ├── rdf_O_O.dat
+│   │   │   │   ├── rdf_O_O.png
+│   │   │   │   ├── rdf_Si_O.dat
+│   │   │   │   ├── rdf_Si_O.png
+│   │   │   │   ├── rdf_Si_Si.dat
+│   │   │   │   ├── rdf_Si_Si.png
+│   │   │   │   └── rdf_all.png
+│   │   │   ├── get_last_1ps_abc.sh
+│   │   │   ├── rdf.py
+│   │   │   ├── sio2_crystallisation_si108o216_solid.xyz
+│   │   │   ├── submit_pbe.sh
+│   │   │   └── submit_rdf.sh
+│   │   ├── 500k
+│   │   │   ├── SiO2_crystallisation_melt_3DSF_pbe.inp
+│   │   │   ├── abc_data
+│   │   │   ├── cp2k_analysis_results
+│   │   │   │   ├── bond_angle_O-Si-O.png
+│   │   │   │   ├── bond_angle_Si-O-Si.png
+│   │   │   │   ├── bond_angle_distributions_combined.png
+│   │   │   │   ├── bond_angle_statistics.txt
+│   │   │   │   ├── bond_angles_O-Si-O.dat
+│   │   │   │   ├── bond_angles_Si-O-Si.dat
+│   │   │   │   ├── bond_length_O-O.png
+│   │   │   │   ├── bond_length_Si-O.png
+│   │   │   │   ├── bond_length_Si-Si.png
+│   │   │   │   ├── bond_lengths_O-O.dat
+│   │   │   │   ├── bond_lengths_Si-O.dat
+│   │   │   │   ├── bond_lengths_Si-Si.dat
+│   │   │   │   ├── comprehensive_analysis_report.txt
+│   │   │   │   ├── rdf_O_O.dat
+│   │   │   │   ├── rdf_O_O.png
+│   │   │   │   ├── rdf_Si_O.dat
+│   │   │   │   ├── rdf_Si_O.png
+│   │   │   │   ├── rdf_Si_Si.dat
+│   │   │   │   ├── rdf_Si_Si.png
+│   │   │   │   └── rdf_all.png
+│   │   │   ├── get_last_1ps_abc.sh
+│   │   │   ├── rdf.py
+│   │   │   ├── sio2_crystallisation_si108o216_solid.xyz
+│   │   │   ├── submit_pbe.sh
+│   │   │   └── submit_rdf.sh
+│   │   ├── A-B.sh
+│   │   ├── FES_from_Reweighting.py
+│   │   ├── SiO2_crystallisation_melt_3DSF_pbe-last-frame.xyz
+│   │   ├── SiO2_crystallisation_melt_3DSF_pbe.inp
+│   │   ├── abc_data
+│   │   ├── data2dp2.py
+│   │   ├── datachange.sh
+│   │   ├── fes_plot.sh
+│   │   ├── get_cloumn.sh
+│   │   ├── get_last_1ps_abc.sh
+│   │   ├── plt_2d.py
+│   │   ├── plt_3dsf_average.py
+│   │   ├── plt_kernel_scatter.py
+│   │   ├── plt_melt.gp
+│   │   ├── plumed_SiO2_crystallisation_melt_3DSF_deeplda2.dat
+│   │   ├── sio2_crystallisation_si108o216_melted.lmp
+│   │   ├── sio2_crystallisation_si108o216_melted.xyz
+│   │   ├── sio2_crystallisation_si108o216_solid.lmp
+│   │   ├── sio2_crystallisation_si108o216_solid.xyz
+│   │   ├── slurm-24771927.out
+│   │   ├── submit_pbe.sh
+│   │   └── submit_rdf.sh
+│   ├── dp_20241109_clean_2
+│   │   ├── 1000k
+│   │   │   ├── SiO2.xyz
+│   │   │   ├── abc_data
+│   │   │   ├── get_last_1ps_abc.sh
+│   │   │   ├── input.lammps
+│   │   │   ├── lammps_analysis_results
+│   │   │   │   ├── bond_angle_O-Si-O.png
+│   │   │   │   ├── bond_angle_Si-O-Si.png
+│   │   │   │   ├── bond_angle_distributions_combined.png
+│   │   │   │   ├── bond_angle_statistics.txt
+│   │   │   │   ├── bond_angles_O-Si-O.dat
+│   │   │   │   ├── bond_angles_Si-O-Si.dat
+│   │   │   │   ├── bond_length_O-O.png
+│   │   │   │   ├── bond_length_Si-O.png
+│   │   │   │   ├── bond_length_Si-Si.png
+│   │   │   │   ├── bond_lengths_O-O.dat
+│   │   │   │   ├── bond_lengths_Si-O.dat
+│   │   │   │   ├── bond_lengths_Si-Si.dat
+│   │   │   │   ├── comprehensive_analysis_report.txt
+│   │   │   │   ├── rdf_O_O.dat
+│   │   │   │   ├── rdf_O_O.png
+│   │   │   │   ├── rdf_Si_O.dat
+│   │   │   │   ├── rdf_Si_O.png
+│   │   │   │   ├── rdf_Si_Si.dat
+│   │   │   │   ├── rdf_Si_Si.png
+│   │   │   │   └── rdf_all.png
+│   │   │   ├── rdf.py
+│   │   │   ├── sio2_crystallisation_si108o216_melted.lmp
+│   │   │   ├── sio2_crystallisation_si108o216_melted.xyz
+│   │   │   ├── sio2_crystallisation_si108o216_solid.lmp
+│   │   │   ├── sio2_crystallisation_si108o216_solid.xyz
+│   │   │   ├── submit_lmp.sh
+│   │   │   └── submit_rdf.sh
+│   │   ├── 1500k
+│   │   │   ├── SiO2.xyz
+│   │   │   ├── abc_data
+│   │   │   ├── get_last_1ps_abc.sh
+│   │   │   ├── input.lammps
+│   │   │   ├── lammps_analysis_results
+│   │   │   │   ├── bond_angle_O-Si-O.png
+│   │   │   │   ├── bond_angle_Si-O-Si.png
+│   │   │   │   ├── bond_angle_distributions_combined.png
+│   │   │   │   ├── bond_angle_statistics.txt
+│   │   │   │   ├── bond_angles_O-Si-O.dat
+│   │   │   │   ├── bond_angles_Si-O-Si.dat
+│   │   │   │   ├── bond_length_O-O.png
+│   │   │   │   ├── bond_length_Si-O.png
+│   │   │   │   ├── bond_length_Si-Si.png
+│   │   │   │   ├── bond_lengths_O-O.dat
+│   │   │   │   ├── bond_lengths_Si-O.dat
+│   │   │   │   ├── bond_lengths_Si-Si.dat
+│   │   │   │   ├── comprehensive_analysis_report.txt
+│   │   │   │   ├── rdf_O_O.dat
+│   │   │   │   ├── rdf_O_O.png
+│   │   │   │   ├── rdf_Si_O.dat
+│   │   │   │   ├── rdf_Si_O.png
+│   │   │   │   ├── rdf_Si_Si.dat
+│   │   │   │   ├── rdf_Si_Si.png
+│   │   │   │   └── rdf_all.png
+│   │   │   ├── rdf.py
+│   │   │   ├── sio2_crystallisation_si108o216_melted.lmp
+│   │   │   ├── sio2_crystallisation_si108o216_melted.xyz
+│   │   │   ├── sio2_crystallisation_si108o216_solid.lmp
+│   │   │   ├── sio2_crystallisation_si108o216_solid.xyz
+│   │   │   ├── submit_lmp.sh
+│   │   │   └── submit_rdf.sh
+│   │   ├── 2000k
+│   │   │   ├── SiO2.xyz
+│   │   │   ├── abc_data
+│   │   │   ├── get_last_1ps_abc.sh
+│   │   │   ├── input.lammps
+│   │   │   ├── lammps_analysis_results
+│   │   │   │   ├── bond_angle_O-Si-O.png
+│   │   │   │   ├── bond_angle_Si-O-Si.png
+│   │   │   │   ├── bond_angle_distributions_combined.png
+│   │   │   │   ├── bond_angle_statistics.txt
+│   │   │   │   ├── bond_angles_O-Si-O.dat
+│   │   │   │   ├── bond_angles_Si-O-Si.dat
+│   │   │   │   ├── bond_length_O-O.png
+│   │   │   │   ├── bond_length_Si-O.png
+│   │   │   │   ├── bond_length_Si-Si.png
+│   │   │   │   ├── bond_lengths_O-O.dat
+│   │   │   │   ├── bond_lengths_Si-O.dat
+│   │   │   │   ├── bond_lengths_Si-Si.dat
+│   │   │   │   ├── comprehensive_analysis_report.txt
+│   │   │   │   ├── rdf_O_O.dat
+│   │   │   │   ├── rdf_O_O.png
+│   │   │   │   ├── rdf_Si_O.dat
+│   │   │   │   ├── rdf_Si_O.png
+│   │   │   │   ├── rdf_Si_Si.dat
+│   │   │   │   ├── rdf_Si_Si.png
+│   │   │   │   └── rdf_all.png
+│   │   │   ├── rdf.py
+│   │   │   ├── sio2_crystallisation_si108o216_melted.lmp
+│   │   │   ├── sio2_crystallisation_si108o216_melted.xyz
+│   │   │   ├── sio2_crystallisation_si108o216_solid.lmp
+│   │   │   ├── sio2_crystallisation_si108o216_solid.xyz
+│   │   │   ├── submit_lmp.sh
+│   │   │   └── submit_rdf.sh
+│   │   ├── 500k
+│   │   │   ├── SiO2.xyz
+│   │   │   ├── abc_data
+│   │   │   ├── get_last_1ps_abc.sh
+│   │   │   ├── input.lammps
+│   │   │   ├── lammps_analysis_results
+│   │   │   │   ├── bond_angle_O-Si-O.png
+│   │   │   │   ├── bond_angle_Si-O-Si.png
+│   │   │   │   ├── bond_angle_distributions_combined.png
+│   │   │   │   ├── bond_angle_statistics.txt
+│   │   │   │   ├── bond_angles_O-Si-O.dat
+│   │   │   │   ├── bond_angles_Si-O-Si.dat
+│   │   │   │   ├── bond_length_O-O.png
+│   │   │   │   ├── bond_length_Si-O.png
+│   │   │   │   ├── bond_length_Si-Si.png
+│   │   │   │   ├── bond_lengths_O-O.dat
+│   │   │   │   ├── bond_lengths_Si-O.dat
+│   │   │   │   ├── bond_lengths_Si-Si.dat
+│   │   │   │   ├── comprehensive_analysis_report.txt
+│   │   │   │   ├── rdf_O_O.dat
+│   │   │   │   ├── rdf_O_O.png
+│   │   │   │   ├── rdf_Si_O.dat
+│   │   │   │   ├── rdf_Si_O.png
+│   │   │   │   ├── rdf_Si_Si.dat
+│   │   │   │   ├── rdf_Si_Si.png
+│   │   │   │   └── rdf_all.png
+│   │   │   ├── rdf.py
+│   │   │   ├── sio2_crystallisation_si108o216_melted.lmp
+│   │   │   ├── sio2_crystallisation_si108o216_melted.xyz
+│   │   │   ├── sio2_crystallisation_si108o216_solid.lmp
+│   │   │   ├── sio2_crystallisation_si108o216_solid.xyz
+│   │   │   ├── submit_lmp.sh
+│   │   │   └── submit_rdf.sh
+│   │   ├── FES_from_Reweighting.py
+│   │   ├── SiO2.xyz
+│   │   ├── StructureFactor_descriptor.test.cpp
+│   │   ├── StructureFactor_descriptor.test.o
+│   │   ├── StructureFactor_descriptor.test.so
+│   │   ├── abc_data
+│   │   ├── fes_plot.sh
+│   │   ├── get_last_1ps_abc.sh
+│   │   ├── get_plot.sh
+│   │   ├── input.lammps
+│   │   ├── input.lammps_bk
+│   │   ├── plot_complete.py
+│   │   ├── plt_2d.py
+│   │   ├── plt_3dsf_average.py
+│   │   ├── plt_kernel_scatter.py
+│   │   ├── plt_melt.gp
+│   │   ├── plumed_SiO2_crystallisation_melt_3DSF_deeplda2.dat
+│   │   ├── sio2_crystallisation_si108o216_melted.lmp
+│   │   ├── sio2_crystallisation_si108o216_melted.xyz
+│   │   ├── sio2_crystallisation_si108o216_solid.lmp
+│   │   ├── sio2_crystallisation_si108o216_solid.xyz
+│   │   └── submit_lmp.sh
+│   ├── lmp_2015
+│   │   ├── 1000k
+│   │   │   ├── SiO2.xyz
+│   │   │   ├── abc_data
+│   │   │   ├── ffield.reax
+│   │   │   ├── get_last_1ps_abc.sh
+│   │   │   ├── input.lammps
+│   │   │   ├── lammps_analysis_results
+│   │   │   │   ├── bond_angle_O-Si-O.png
+│   │   │   │   ├── bond_angle_Si-O-Si.png
+│   │   │   │   ├── bond_angle_distributions_combined.png
+│   │   │   │   ├── bond_angle_statistics.txt
+│   │   │   │   ├── bond_angles_O-Si-O.dat
+│   │   │   │   ├── bond_angles_Si-O-Si.dat
+│   │   │   │   ├── bond_length_O-O.png
+│   │   │   │   ├── bond_length_Si-O.png
+│   │   │   │   ├── bond_length_Si-Si.png
+│   │   │   │   ├── bond_lengths_O-O.dat
+│   │   │   │   ├── bond_lengths_Si-O.dat
+│   │   │   │   ├── bond_lengths_Si-Si.dat
+│   │   │   │   ├── comprehensive_analysis_report.txt
+│   │   │   │   ├── rdf_O_O.dat
+│   │   │   │   ├── rdf_O_O.png
+│   │   │   │   ├── rdf_Si_O.dat
+│   │   │   │   ├── rdf_Si_O.png
+│   │   │   │   ├── rdf_Si_Si.dat
+│   │   │   │   ├── rdf_Si_Si.png
+│   │   │   │   └── rdf_all.png
+│   │   │   ├── rdf.py
+│   │   │   ├── sio2_crystallisation_si108o216_melted.lmp
+│   │   │   ├── sio2_crystallisation_si108o216_melted.xyz
+│   │   │   ├── sio2_crystallisation_si108o216_solid.lmp
+│   │   │   ├── sio2_crystallisation_si108o216_solid.xyz
+│   │   │   ├── submit_lmp.sh
+│   │   │   └── submit_rdf.sh
+│   │   ├── 1500k
+│   │   │   ├── SiO2.xyz
+│   │   │   ├── abc_data
+│   │   │   ├── ffield.reax
+│   │   │   ├── get_last_1ps_abc.sh
+│   │   │   ├── input.lammps
+│   │   │   ├── lammps_analysis_results
+│   │   │   │   ├── bond_angle_O-Si-O.png
+│   │   │   │   ├── bond_angle_Si-O-Si.png
+│   │   │   │   ├── bond_angle_distributions_combined.png
+│   │   │   │   ├── bond_angle_statistics.txt
+│   │   │   │   ├── bond_angles_O-Si-O.dat
+│   │   │   │   ├── bond_angles_Si-O-Si.dat
+│   │   │   │   ├── bond_length_O-O.png
+│   │   │   │   ├── bond_length_Si-O.png
+│   │   │   │   ├── bond_length_Si-Si.png
+│   │   │   │   ├── bond_lengths_O-O.dat
+│   │   │   │   ├── bond_lengths_Si-O.dat
+│   │   │   │   ├── bond_lengths_Si-Si.dat
+│   │   │   │   ├── comprehensive_analysis_report.txt
+│   │   │   │   ├── rdf_O_O.dat
+│   │   │   │   ├── rdf_O_O.png
+│   │   │   │   ├── rdf_Si_O.dat
+│   │   │   │   ├── rdf_Si_O.png
+│   │   │   │   ├── rdf_Si_Si.dat
+│   │   │   │   ├── rdf_Si_Si.png
+│   │   │   │   └── rdf_all.png
+│   │   │   ├── rdf.py
+│   │   │   ├── sio2_crystallisation_si108o216_melted.lmp
+│   │   │   ├── sio2_crystallisation_si108o216_melted.xyz
+│   │   │   ├── sio2_crystallisation_si108o216_solid.lmp
+│   │   │   ├── sio2_crystallisation_si108o216_solid.xyz
+│   │   │   ├── submit_lmp.sh
+│   │   │   └── submit_rdf.sh
+│   │   ├── 2000k
+│   │   │   ├── SiO2.xyz
+│   │   │   ├── abc_data
+│   │   │   ├── ffield.reax
+│   │   │   ├── get_last_1ps_abc.sh
+│   │   │   ├── input.lammps
+│   │   │   ├── lammps_analysis_results
+│   │   │   │   ├── bond_angle_O-Si-O.png
+│   │   │   │   ├── bond_angle_Si-O-Si.png
+│   │   │   │   ├── bond_angle_distributions_combined.png
+│   │   │   │   ├── bond_angle_statistics.txt
+│   │   │   │   ├── bond_angles_O-Si-O.dat
+│   │   │   │   ├── bond_angles_Si-O-Si.dat
+│   │   │   │   ├── bond_length_O-O.png
+│   │   │   │   ├── bond_length_Si-O.png
+│   │   │   │   ├── bond_length_Si-Si.png
+│   │   │   │   ├── bond_lengths_O-O.dat
+│   │   │   │   ├── bond_lengths_Si-O.dat
+│   │   │   │   ├── bond_lengths_Si-Si.dat
+│   │   │   │   ├── comprehensive_analysis_report.txt
+│   │   │   │   ├── rdf_O_O.dat
+│   │   │   │   ├── rdf_O_O.png
+│   │   │   │   ├── rdf_Si_O.dat
+│   │   │   │   ├── rdf_Si_O.png
+│   │   │   │   ├── rdf_Si_Si.dat
+│   │   │   │   ├── rdf_Si_Si.png
+│   │   │   │   └── rdf_all.png
+│   │   │   ├── rdf.py
+│   │   │   ├── sio2_crystallisation_si108o216_melted.lmp
+│   │   │   ├── sio2_crystallisation_si108o216_melted.xyz
+│   │   │   ├── sio2_crystallisation_si108o216_solid.lmp
+│   │   │   ├── sio2_crystallisation_si108o216_solid.xyz
+│   │   │   ├── submit_lmp.sh
+│   │   │   └── submit_rdf.sh
+│   │   ├── 500k
+│   │   │   ├── SiO2.xyz
+│   │   │   ├── abc_data
+│   │   │   ├── ffield.reax
+│   │   │   ├── get_last_1ps_abc.sh
+│   │   │   ├── input.lammps
+│   │   │   ├── lammps_analysis_results
+│   │   │   │   ├── bond_angle_O-Si-O.png
+│   │   │   │   ├── bond_angle_Si-O-Si.png
+│   │   │   │   ├── bond_angle_distributions_combined.png
+│   │   │   │   ├── bond_angle_statistics.txt
+│   │   │   │   ├── bond_angles_O-Si-O.dat
+│   │   │   │   ├── bond_angles_Si-O-Si.dat
+│   │   │   │   ├── bond_length_O-O.png
+│   │   │   │   ├── bond_length_Si-O.png
+│   │   │   │   ├── bond_length_Si-Si.png
+│   │   │   │   ├── bond_lengths_O-O.dat
+│   │   │   │   ├── bond_lengths_Si-O.dat
+│   │   │   │   ├── bond_lengths_Si-Si.dat
+│   │   │   │   ├── comprehensive_analysis_report.txt
+│   │   │   │   ├── rdf_O_O.dat
+│   │   │   │   ├── rdf_O_O.png
+│   │   │   │   ├── rdf_Si_O.dat
+│   │   │   │   ├── rdf_Si_O.png
+│   │   │   │   ├── rdf_Si_Si.dat
+│   │   │   │   ├── rdf_Si_Si.png
+│   │   │   │   └── rdf_all.png
+│   │   │   ├── rdf.py
+│   │   │   ├── sio2_crystallisation_si108o216_melted.lmp
+│   │   │   ├── sio2_crystallisation_si108o216_melted.xyz
+│   │   │   ├── sio2_crystallisation_si108o216_solid.lmp
+│   │   │   ├── sio2_crystallisation_si108o216_solid.xyz
+│   │   │   ├── submit_lmp.sh
+│   │   │   └── submit_rdf.sh
+│   │   ├── SiO2.xyz
+│   │   ├── abc_data
+│   │   ├── ffield.reax
+│   │   ├── get_last_1ps_abc.sh
+│   │   ├── in.flux
+│   │   ├── input .lammps_bk
+│   │   ├── input.lammps
+│   │   ├── lmp_atom2charge.sh
+│   │   ├── lmp_charge2atom.sh
+│   │   ├── sio2_crystallisation_si108o216_melted.lmp
+│   │   ├── sio2_crystallisation_si108o216_melted.xyz
+│   │   ├── sio2_crystallisation_si108o216_solid.lmp
+│   │   ├── sio2_crystallisation_si108o216_solid.xyz
+│   │   └── submit_lmp.sh
+│   ├── lmp_bks
+│   │   ├── 1000K
+│   │   │   ├── SiO2.xyz
+│   │   │   ├── abc_data
+│   │   │   ├── get_last_1ps_abc.sh
+│   │   │   ├── input.lammps
+│   │   │   ├── lammps_analysis_results
+│   │   │   │   ├── bond_angle_O-Si-O.png
+│   │   │   │   ├── bond_angle_Si-O-Si.png
+│   │   │   │   ├── bond_angle_distributions_combined.png
+│   │   │   │   ├── bond_angle_statistics.txt
+│   │   │   │   ├── bond_angles_O-Si-O.dat
+│   │   │   │   ├── bond_angles_Si-O-Si.dat
+│   │   │   │   ├── bond_length_O-O.png
+│   │   │   │   ├── bond_length_Si-O.png
+│   │   │   │   ├── bond_length_Si-Si.png
+│   │   │   │   ├── bond_lengths_O-O.dat
+│   │   │   │   ├── bond_lengths_Si-O.dat
+│   │   │   │   ├── bond_lengths_Si-Si.dat
+│   │   │   │   ├── comprehensive_analysis_report.txt
+│   │   │   │   ├── rdf_O_O.dat
+│   │   │   │   ├── rdf_O_O.png
+│   │   │   │   ├── rdf_Si_O.dat
+│   │   │   │   ├── rdf_Si_O.png
+│   │   │   │   ├── rdf_Si_Si.dat
+│   │   │   │   ├── rdf_Si_Si.png
+│   │   │   │   └── rdf_all.png
+│   │   │   ├── potential_SiO2.TPF
+│   │   │   ├── rdf.py
+│   │   │   ├── sio2_crystallisation_si108o216_melted.lmp
+│   │   │   ├── sio2_crystallisation_si108o216_melted.xyz
+│   │   │   ├── sio2_crystallisation_si108o216_solid.lmp
+│   │   │   ├── sio2_crystallisation_si108o216_solid.xyz
+│   │   │   ├── submit_lmp.sh
+│   │   │   └── submit_rdf.sh
+│   │   ├── 1500K
+│   │   │   ├── SiO2.xyz
+│   │   │   ├── abc_data
+│   │   │   ├── get_last_1ps_abc.sh
+│   │   │   ├── input.lammps
+│   │   │   ├── lammps_analysis_results
+│   │   │   │   ├── bond_angle_O-Si-O.png
+│   │   │   │   ├── bond_angle_Si-O-Si.png
+│   │   │   │   ├── bond_angle_distributions_combined.png
+│   │   │   │   ├── bond_angle_statistics.txt
+│   │   │   │   ├── bond_angles_O-Si-O.dat
+│   │   │   │   ├── bond_angles_Si-O-Si.dat
+│   │   │   │   ├── bond_length_O-O.png
+│   │   │   │   ├── bond_length_Si-O.png
+│   │   │   │   ├── bond_length_Si-Si.png
+│   │   │   │   ├── bond_lengths_O-O.dat
+│   │   │   │   ├── bond_lengths_Si-O.dat
+│   │   │   │   ├── bond_lengths_Si-Si.dat
+│   │   │   │   ├── comprehensive_analysis_report.txt
+│   │   │   │   ├── rdf_O_O.dat
+│   │   │   │   ├── rdf_O_O.png
+│   │   │   │   ├── rdf_Si_O.dat
+│   │   │   │   ├── rdf_Si_O.png
+│   │   │   │   ├── rdf_Si_Si.dat
+│   │   │   │   ├── rdf_Si_Si.png
+│   │   │   │   └── rdf_all.png
+│   │   │   ├── potential_SiO2.TPF
+│   │   │   ├── rdf.py
+│   │   │   ├── sio2_crystallisation_si108o216_melted.lmp
+│   │   │   ├── sio2_crystallisation_si108o216_melted.xyz
+│   │   │   ├── sio2_crystallisation_si108o216_solid.lmp
+│   │   │   ├── sio2_crystallisation_si108o216_solid.xyz
+│   │   │   ├── submit_lmp.sh
+│   │   │   └── submit_rdf.sh
+│   │   ├── 2000K
+│   │   │   ├── SiO2.xyz
+│   │   │   ├── abc_data
+│   │   │   ├── get_last_1ps_abc.sh
+│   │   │   ├── input.lammps
+│   │   │   ├── lammps_analysis_results
+│   │   │   │   ├── bond_angle_O-Si-O.png
+│   │   │   │   ├── bond_angle_Si-O-Si.png
+│   │   │   │   ├── bond_angle_distributions_combined.png
+│   │   │   │   ├── bond_angle_statistics.txt
+│   │   │   │   ├── bond_angles_O-Si-O.dat
+│   │   │   │   ├── bond_angles_Si-O-Si.dat
+│   │   │   │   ├── bond_length_O-O.png
+│   │   │   │   ├── bond_length_Si-O.png
+│   │   │   │   ├── bond_length_Si-Si.png
+│   │   │   │   ├── bond_lengths_O-O.dat
+│   │   │   │   ├── bond_lengths_Si-O.dat
+│   │   │   │   ├── bond_lengths_Si-Si.dat
+│   │   │   │   ├── comprehensive_analysis_report.txt
+│   │   │   │   ├── rdf_O_O.dat
+│   │   │   │   ├── rdf_O_O.png
+│   │   │   │   ├── rdf_Si_O.dat
+│   │   │   │   ├── rdf_Si_O.png
+│   │   │   │   ├── rdf_Si_Si.dat
+│   │   │   │   ├── rdf_Si_Si.png
+│   │   │   │   └── rdf_all.png
+│   │   │   ├── potential_SiO2.TPF
+│   │   │   ├── rdf.py
+│   │   │   ├── sio2_crystallisation_si108o216_melted.lmp
+│   │   │   ├── sio2_crystallisation_si108o216_melted.xyz
+│   │   │   ├── sio2_crystallisation_si108o216_solid.lmp
+│   │   │   ├── sio2_crystallisation_si108o216_solid.xyz
+│   │   │   ├── submit_lmp.sh
+│   │   │   └── submit_rdf.sh
+│   │   ├── 500K
+│   │   │   ├── SiO2.xyz
+│   │   │   ├── abc_data
+│   │   │   ├── get_last_1ps_abc.sh
+│   │   │   ├── input.lammps
+│   │   │   ├── lammps_analysis_results
+│   │   │   │   ├── bond_angle_O-Si-O.png
+│   │   │   │   ├── bond_angle_Si-O-Si.png
+│   │   │   │   ├── bond_angle_distributions_combined.png
+│   │   │   │   ├── bond_angle_statistics.txt
+│   │   │   │   ├── bond_angles_O-Si-O.dat
+│   │   │   │   ├── bond_angles_Si-O-Si.dat
+│   │   │   │   ├── bond_length_O-O.png
+│   │   │   │   ├── bond_length_Si-O.png
+│   │   │   │   ├── bond_length_Si-Si.png
+│   │   │   │   ├── bond_lengths_O-O.dat
+│   │   │   │   ├── bond_lengths_Si-O.dat
+│   │   │   │   ├── bond_lengths_Si-Si.dat
+│   │   │   │   ├── comprehensive_analysis_report.txt
+│   │   │   │   ├── rdf_O_O.dat
+│   │   │   │   ├── rdf_O_O.png
+│   │   │   │   ├── rdf_Si_O.dat
+│   │   │   │   ├── rdf_Si_O.png
+│   │   │   │   ├── rdf_Si_Si.dat
+│   │   │   │   ├── rdf_Si_Si.png
+│   │   │   │   └── rdf_all.png
+│   │   │   ├── potential_SiO2.TPF
+│   │   │   ├── rdf.py
+│   │   │   ├── sio2_crystallisation_si108o216_melted.lmp
+│   │   │   ├── sio2_crystallisation_si108o216_melted.xyz
+│   │   │   ├── sio2_crystallisation_si108o216_solid.lmp
+│   │   │   ├── sio2_crystallisation_si108o216_solid.xyz
+│   │   │   ├── submit_lmp.sh
+│   │   │   └── submit_rdf.sh
+│   │   ├── SiO2.xyz
+│   │   ├── abc_data
+│   │   ├── change_charge.py
+│   │   ├── ffield.reax
+│   │   ├── get_last_1ps_abc.sh
+│   │   ├── in.flux
+│   │   ├── input.lammps
+│   │   ├── lmp_atom2charge.sh
+│   │   ├── lmp_charge2atom.sh
+│   │   ├── potential_SiO2.TPF
+│   │   ├── sio2_crystallisation_si108o216_melted.lmp
+│   │   ├── sio2_crystallisation_si108o216_melted.xyz
+│   │   ├── sio2_crystallisation_si108o216_solid.lmp
+│   │   ├── sio2_crystallisation_si108o216_solid.xyz
+│   │   └── submit_lmp.sh
+│   ├── plot_lattice.py
+│   ├── rdf_combine_plot.py
+│   ├── summary.csv
+│   └── times-new-roman
+│       └── times.ttf
+├── DP_training
+│   ├── HyGSI
+│   │   ├── Dataset_I_and_II.hdf5
+│   │   ├── graph_compressed_20241109_clean_2.pb
+│   │   ├── plt_nature.py
+│   │   ├── sio2_param.json
+│   │   └── submit_article.sh
+│   ├── HyGSI-X
+│   │   ├── Dataset_I
+│   │   │   ├── combined_dpdata_new_dp_all_absorb_dir.hdf5
+│   │   │   ├── combined_dpdata_new_dp_all_melt_dir.hdf5
+│   │   │   ├── combined_dpdata_new_dp_all_surf_re_dir.hdf5
+│   │   │   └── combined_dpdata_new_dp_all_surf_recomposition_dir.hdf5
+│   │   ├── graph_compressed_20241009.pb
+│   │   ├── plt_nature.py
+│   │   ├── sio2_param.json
+│   │   └── submit_ariticle.sh
+│   ├── README.md
+│   └── tree.log
+├── LICENSE
+├── Reaction_energy_diff
+│   ├── reaction1
+│   │   ├── opt1
+│   │   │   ├── reconstruction_A_87_addH_addO.xyz
+│   │   │   ├── reconstruction_A_87_opted_add_O_C_eq.xyz
+│   │   │   ├── sio2_surf_o_reconstruct_pbe_opt_absorb_opt.inp
+│   │   │   ├── sio2_surf_o_reconstruct_pbe_opt_absorb_opt_opt.xyz
+│   │   │   └── submit_pbe.sh
+│   │   ├── opt2
+│   │   │   ├── reconstruction_A_87_addH_addO.xyz
+│   │   │   ├── reconstruction_A_87_opted_add_O_C_eq.xyz
+│   │   │   ├── sio2_surf_o_reconstruct_pbe_opt_absorb_opt.inp
+│   │   │   ├── sio2_surf_o_reconstruct_pbe_opt_absorb_opt_opt.xyz
+│   │   │   └── submit_pbe.sh
+│   │   └── reaction1_re_prod.xyz
+│   ├── reaction2
+│   │   ├── combine.sh
+│   │   ├── opt1
+│   │   │   ├── reconstruction_A_87_opted_add_O_G_eq.xyz
+│   │   │   ├── sio2_surf_o_reconstruct_pbe_opt_absorb_opt.inp
+│   │   │   ├── sio2_surf_o_reconstruct_pbe_opt_absorb_opt_opt.xyz
+│   │   │   └── submit_pbe.sh
+│   │   ├── opt2
+│   │   │   ├── reconstruction_A_87_opted_add_O_G_eq.xyz
+│   │   │   ├── sio2_surf_o_reconstruct_pbe_opt_absorb_opt.inp
+│   │   │   ├── sio2_surf_o_reconstruct_pbe_opt_absorb_opt_opt.xyz
+│   │   │   ├── sio2_surf_o_reconstruct_pbe_opt_absorb_opt_opt_wrap.xyz
+│   │   │   ├── slurm-23017482.out
+│   │   │   └── submit_pbe.sh
+│   │   └── reaction2_re_prod.xyz
+│   └── reaction_all
+│       ├── collected_energies
+│       │   ├── reaction1
+│       │   │   ├── orig_dft_PBE.csv
+│       │   │   ├── orig_dp_20241109_clean_2.csv
+│       │   │   ├── orig_lmp_2015.csv
+│       │   │   └── orig_lmp_bks.csv
+│       │   ├── reaction1_merged.csv
+│       │   ├── reaction2
+│       │   │   ├── orig_dft_PBE.csv
+│       │   │   ├── orig_dp_20241109_clean_2.csv
+│       │   │   ├── orig_lmp_2015.csv
+│       │   │   └── orig_lmp_bks.csv
+│       │   └── reaction2_merged.csv
+│       ├── combine_all_energy.py
+│       ├── combine_and_plt.py
+│       ├── diff_energies
+│       │   ├── reaction1
+│       │   │   ├── diff_dft_PBE.csv
+│       │   │   ├── diff_dp_20241109_clean_2.csv
+│       │   │   ├── diff_lmp_2015.csv
+│       │   │   └── diff_lmp_bks.csv
+│       │   ├── reaction1_diff_merged.csv
+│       │   ├── reaction2
+│       │   │   ├── diff_dft_PBE.csv
+│       │   │   ├── diff_dp_20241109_clean_2.csv
+│       │   │   ├── diff_lmp_2015.csv
+│       │   │   └── diff_lmp_bks.csv
+│       │   └── reaction2_diff_merged.csv
+│       ├── energy_bk
+│       │   ├── dft_PBE
+│       │   │   ├── energy_force_pbe.inp
+│       │   │   ├── process_frame.sh
+│       │   │   ├── resub_frames.sh
+│       │   │   └── submit_template.sh
+│       │   ├── interpolate_single.py
+│       │   ├── reaction1_re_prod.xyz
+│       │   ├── reaction2_re_prod.xyz
+│       │   └── sub.sh
+│       ├── output_reactions
+│       │   ├── reaction1_plot.png
+│       │   ├── reaction1_table.csv
+│       │   ├── reaction1_trajectory.xyz
+│       │   ├── reaction2_plot.png
+│       │   ├── reaction2_table.csv
+│       │   └── reaction2_trajectory.xyz
+│       ├── plt.py
+│       ├── plt_no_bks.py
+│       ├── reaction1
+│       │   ├── dft_PBE
+│       │   │   ├── combine_energy.py
+│       │   │   ├── energies.csv
+│       │   │   ├── energy_force_pbe.inp
+│       │   │   ├── frame_0.inp
+│       │   │   ├── frame_0.out
+│       │   │   ├── frame_0.xyz
+│       │   │   ├── frame_1.inp
+│       │   │   ├── frame_1.out
+│       │   │   ├── frame_1.xyz
+│       │   │   ├── frame_2.inp
+│       │   │   ├── frame_2.out
+│       │   │   ├── frame_2.xyz
+│       │   │   ├── frame_3.inp
+│       │   │   ├── frame_3.out
+│       │   │   ├── frame_3.xyz
+│       │   │   ├── frame_4.inp
+│       │   │   ├── frame_4.out
+│       │   │   ├── frame_4.xyz
+│       │   │   ├── frame_5.inp
+│       │   │   ├── frame_5.out
+│       │   │   ├── frame_5.xyz
+│       │   │   ├── frame_6.inp
+│       │   │   ├── frame_6.out
+│       │   │   ├── frame_6.xyz
+│       │   │   ├── frame_sub_0.sh
+│       │   │   ├── frame_sub_1.sh
+│       │   │   ├── frame_sub_2.sh
+│       │   │   ├── frame_sub_3.sh
+│       │   │   ├── frame_sub_4.sh
+│       │   │   ├── frame_sub_5.sh
+│       │   │   ├── frame_sub_6.sh
+│       │   │   ├── process_frame.sh
+│       │   │   ├── scancel.sh
+│       │   │   ├── slurm-23027283.out
+│       │   │   ├── slurm-23027284.out
+│       │   │   ├── slurm-23027285.out
+│       │   │   ├── slurm-23027286.out
+│       │   │   ├── slurm-23027287.out
+│       │   │   ├── slurm-23027288.out
+│       │   │   ├── slurm-23027289.out
+│       │   │   ├── submit_template.sh
+│       │   │   └── trajectory.xyz
+│       │   ├── dp_20241109_clean_2
+│       │   │   ├── compute_energy.in
+│       │   │   ├── energies.csv
+│       │   │   ├── frames
+│       │   │   │   ├── frame_000.lmp
+│       │   │   │   ├── frame_000.xyz
+│       │   │   │   ├── frame_001.lmp
+│       │   │   │   ├── frame_001.xyz
+│       │   │   │   ├── frame_002.lmp
+│       │   │   │   ├── frame_002.xyz
+│       │   │   │   ├── frame_003.lmp
+│       │   │   │   ├── frame_003.xyz
+│       │   │   │   ├── frame_004.lmp
+│       │   │   │   ├── frame_004.xyz
+│       │   │   │   ├── frame_005.lmp
+│       │   │   │   ├── frame_005.xyz
+│       │   │   │   ├── frame_006.lmp
+│       │   │   │   ├── frame_006.xyz
+│       │   │   │   └── lmp_atom2charge.sh
+│       │   │   ├── input.lammps
+│       │   │   ├── lmp_atom2charge.sh
+│       │   │   ├── logs
+│       │   │   │   ├── frame_000.log
+│       │   │   │   ├── frame_001.log
+│       │   │   │   ├── frame_002.log
+│       │   │   │   ├── frame_003.log
+│       │   │   │   ├── frame_004.log
+│       │   │   │   ├── frame_005.log
+│       │   │   │   └── frame_006.log
+│       │   │   ├── run.sh
+│       │   │   ├── submit_lmp.sh
+│       │   │   └── xyz2lmp.sh
+│       │   ├── energy_force_pbe.inp
+│       │   ├── frames
+│       │   │   ├── frame_000.lmp
+│       │   │   ├── frame_000.xyz
+│       │   │   ├── frame_001.lmp
+│       │   │   ├── frame_001.xyz
+│       │   │   ├── frame_002.lmp
+│       │   │   ├── frame_002.xyz
+│       │   │   ├── frame_003.lmp
+│       │   │   ├── frame_003.xyz
+│       │   │   ├── frame_004.lmp
+│       │   │   ├── frame_004.xyz
+│       │   │   ├── frame_005.lmp
+│       │   │   ├── frame_005.xyz
+│       │   │   ├── frame_006.lmp
+│       │   │   ├── frame_006.xyz
+│       │   │   └── lmp_atom2charge.sh
+│       │   ├── interpolate_single.py
+│       │   ├── lmp_2015
+│       │   │   ├── compute_energy.in
+│       │   │   ├── energies.csv
+│       │   │   ├── ffield.reax
+│       │   │   ├── frames
+│       │   │   │   ├── frame_000.lmp
+│       │   │   │   ├── frame_000.xyz
+│       │   │   │   ├── frame_001.lmp
+│       │   │   │   ├── frame_001.xyz
+│       │   │   │   ├── frame_002.lmp
+│       │   │   │   ├── frame_002.xyz
+│       │   │   │   ├── frame_003.lmp
+│       │   │   │   ├── frame_003.xyz
+│       │   │   │   ├── frame_004.lmp
+│       │   │   │   ├── frame_004.xyz
+│       │   │   │   ├── frame_005.lmp
+│       │   │   │   ├── frame_005.xyz
+│       │   │   │   ├── frame_006.lmp
+│       │   │   │   ├── frame_006.xyz
+│       │   │   │   └── lmp_atom2charge.sh
+│       │   │   ├── input.lammps
+│       │   │   ├── lmp_atom2charge.sh
+│       │   │   ├── logs
+│       │   │   │   ├── frame_000.log
+│       │   │   │   ├── frame_001.log
+│       │   │   │   ├── frame_002.log
+│       │   │   │   ├── frame_003.log
+│       │   │   │   ├── frame_004.log
+│       │   │   │   ├── frame_005.log
+│       │   │   │   └── frame_006.log
+│       │   │   ├── run.sh
+│       │   │   ├── submit_lmp.sh
+│       │   │   └── xyz2lmp.sh
+│       │   ├── lmp_atom2charge.sh
+│       │   ├── lmp_bks
+│       │   │   ├── compute_energy.in
+│       │   │   ├── energies.csv
+│       │   │   ├── frames
+│       │   │   │   ├── frame_000.lmp
+│       │   │   │   ├── frame_000.xyz
+│       │   │   │   ├── frame_001.lmp
+│       │   │   │   ├── frame_001.xyz
+│       │   │   │   ├── frame_002.lmp
+│       │   │   │   ├── frame_002.xyz
+│       │   │   │   ├── frame_003.lmp
+│       │   │   │   ├── frame_003.xyz
+│       │   │   │   ├── frame_004.lmp
+│       │   │   │   ├── frame_004.xyz
+│       │   │   │   ├── frame_005.lmp
+│       │   │   │   ├── frame_005.xyz
+│       │   │   │   ├── frame_006.lmp
+│       │   │   │   ├── frame_006.xyz
+│       │   │   │   └── potential_SiO2.TPF
+│       │   │   ├── interpolate_single.py
+│       │   │   ├── lmp_atom2charge.sh
+│       │   │   ├── logs
+│       │   │   │   ├── frame_000.log
+│       │   │   │   ├── frame_001.log
+│       │   │   │   ├── frame_002.log
+│       │   │   │   ├── frame_003.log
+│       │   │   │   ├── frame_004.log
+│       │   │   │   ├── frame_005.log
+│       │   │   │   └── frame_006.log
+│       │   │   ├── potential_SiO2.TPF
+│       │   │   ├── process_frame.sh
+│       │   │   ├── reaction1_re_prod.xyz
+│       │   │   ├── resub_frames.sh
+│       │   │   ├── run.sh
+│       │   │   ├── sub.sh
+│       │   │   ├── submit_template.sh
+│       │   │   ├── trajectory.xyz
+│       │   │   └── xyz2lmp.sh
+│       │   ├── process_frame.sh
+│       │   ├── reaction1_re_prod.xyz
+│       │   ├── resub_frames.sh
+│       │   ├── sub.sh
+│       │   ├── submit_template.sh
+│       │   ├── trajectory.xyz
+│       │   └── xyz2lmp.sh
+│       ├── reaction2
+│       │   ├── dft_PBE
+│       │   │   ├── combine_energy.py
+│       │   │   ├── energies.csv
+│       │   │   ├── energy_force_pbe.inp
+│       │   │   ├── frame_0.inp
+│       │   │   ├── frame_0.out
+│       │   │   ├── frame_0.xyz
+│       │   │   ├── frame_1.inp
+│       │   │   ├── frame_1.out
+│       │   │   ├── frame_1.xyz
+│       │   │   ├── frame_2.inp
+│       │   │   ├── frame_2.out
+│       │   │   ├── frame_2.xyz
+│       │   │   ├── frame_3.inp
+│       │   │   ├── frame_3.out
+│       │   │   ├── frame_3.xyz
+│       │   │   ├── frame_4.inp
+│       │   │   ├── frame_4.out
+│       │   │   ├── frame_4.xyz
+│       │   │   ├── frame_5.inp
+│       │   │   ├── frame_5.out
+│       │   │   ├── frame_5.xyz
+│       │   │   ├── frame_6.inp
+│       │   │   ├── frame_6.out
+│       │   │   ├── frame_6.xyz
+│       │   │   ├── frame_sub_0.sh
+│       │   │   ├── frame_sub_1.sh
+│       │   │   ├── frame_sub_2.sh
+│       │   │   ├── frame_sub_3.sh
+│       │   │   ├── frame_sub_4.sh
+│       │   │   ├── frame_sub_5.sh
+│       │   │   ├── frame_sub_6.sh
+│       │   │   ├── process_frame.sh
+│       │   │   ├── scancel.sh
+│       │   │   ├── slurm-23027295.out
+│       │   │   ├── slurm-23027296.out
+│       │   │   ├── slurm-23027297.out
+│       │   │   ├── slurm-23027298.out
+│       │   │   ├── slurm-23027299.out
+│       │   │   ├── slurm-23027300.out
+│       │   │   ├── slurm-23027301.out
+│       │   │   ├── submit_template.sh
+│       │   │   └── trajectory.xyz
+│       │   ├── dp_20241109_clean_2
+│       │   │   ├── compute_energy.in
+│       │   │   ├── energies.csv
+│       │   │   ├── frames
+│       │   │   │   ├── frame_000.lmp
+│       │   │   │   ├── frame_000.xyz
+│       │   │   │   ├── frame_001.lmp
+│       │   │   │   ├── frame_001.xyz
+│       │   │   │   ├── frame_002.lmp
+│       │   │   │   ├── frame_002.xyz
+│       │   │   │   ├── frame_003.lmp
+│       │   │   │   ├── frame_003.xyz
+│       │   │   │   ├── frame_004.lmp
+│       │   │   │   ├── frame_004.xyz
+│       │   │   │   ├── frame_005.lmp
+│       │   │   │   ├── frame_005.xyz
+│       │   │   │   ├── frame_006.lmp
+│       │   │   │   ├── frame_006.xyz
+│       │   │   │   └── lmp_atom2charge.sh
+│       │   │   ├── input.lammps
+│       │   │   ├── lmp_atom2charge.sh
+│       │   │   ├── logs
+│       │   │   │   ├── frame_000.log
+│       │   │   │   ├── frame_001.log
+│       │   │   │   ├── frame_002.log
+│       │   │   │   ├── frame_003.log
+│       │   │   │   ├── frame_004.log
+│       │   │   │   ├── frame_005.log
+│       │   │   │   └── frame_006.log
+│       │   │   ├── run.sh
+│       │   │   ├── submit_lmp.sh
+│       │   │   └── xyz2lmp.sh
+│       │   ├── frames
+│       │   │   ├── frame_000.lmp
+│       │   │   ├── frame_000.xyz
+│       │   │   ├── frame_001.lmp
+│       │   │   ├── frame_001.xyz
+│       │   │   ├── frame_002.lmp
+│       │   │   ├── frame_002.xyz
+│       │   │   ├── frame_003.lmp
+│       │   │   ├── frame_003.xyz
+│       │   │   ├── frame_004.lmp
+│       │   │   ├── frame_004.xyz
+│       │   │   ├── frame_005.lmp
+│       │   │   ├── frame_005.xyz
+│       │   │   ├── frame_006.lmp
+│       │   │   └── frame_006.xyz
+│       │   ├── interpolate_single.py
+│       │   ├── lmp_2015
+│       │   │   ├── compute_energy.in
+│       │   │   ├── energies.csv
+│       │   │   ├── ffield.reax
+│       │   │   ├── frames
+│       │   │   │   ├── frame_000.lmp
+│       │   │   │   ├── frame_000.xyz
+│       │   │   │   ├── frame_001.lmp
+│       │   │   │   ├── frame_001.xyz
+│       │   │   │   ├── frame_002.lmp
+│       │   │   │   ├── frame_002.xyz
+│       │   │   │   ├── frame_003.lmp
+│       │   │   │   ├── frame_003.xyz
+│       │   │   │   ├── frame_004.lmp
+│       │   │   │   ├── frame_004.xyz
+│       │   │   │   ├── frame_005.lmp
+│       │   │   │   ├── frame_005.xyz
+│       │   │   │   ├── frame_006.lmp
+│       │   │   │   ├── frame_006.xyz
+│       │   │   │   └── lmp_atom2charge.sh
+│       │   │   ├── input.lammps
+│       │   │   ├── lmp_atom2charge.sh
+│       │   │   ├── logs
+│       │   │   │   ├── frame_000.log
+│       │   │   │   ├── frame_001.log
+│       │   │   │   ├── frame_002.log
+│       │   │   │   ├── frame_003.log
+│       │   │   │   ├── frame_004.log
+│       │   │   │   ├── frame_005.log
+│       │   │   │   └── frame_006.log
+│       │   │   ├── run.sh
+│       │   │   ├── submit_lmp.sh
+│       │   │   └── xyz2lmp.sh
+│       │   ├── lmp_atom2charge.sh
+│       │   ├── lmp_bks
+│       │   │   ├── compute_energy.in
+│       │   │   ├── energies.csv
+│       │   │   ├── frames
+│       │   │   │   ├── frame_000.lmp
+│       │   │   │   ├── frame_000.xyz
+│       │   │   │   ├── frame_001.lmp
+│       │   │   │   ├── frame_001.xyz
+│       │   │   │   ├── frame_002.lmp
+│       │   │   │   ├── frame_002.xyz
+│       │   │   │   ├── frame_003.lmp
+│       │   │   │   ├── frame_003.xyz
+│       │   │   │   ├── frame_004.lmp
+│       │   │   │   ├── frame_004.xyz
+│       │   │   │   ├── frame_005.lmp
+│       │   │   │   ├── frame_005.xyz
+│       │   │   │   ├── frame_006.lmp
+│       │   │   │   ├── frame_006.xyz
+│       │   │   │   └── potential_SiO2.TPF
+│       │   │   ├── interpolate_single.py
+│       │   │   ├── lmp_atom2charge.sh
+│       │   │   ├── logs
+│       │   │   │   ├── frame_000.log
+│       │   │   │   ├── frame_001.log
+│       │   │   │   ├── frame_002.log
+│       │   │   │   ├── frame_003.log
+│       │   │   │   ├── frame_004.log
+│       │   │   │   ├── frame_005.log
+│       │   │   │   └── frame_006.log
+│       │   │   ├── potential_SiO2.TPF
+│       │   │   ├── process_frame.sh
+│       │   │   ├── reaction1_re_prod.xyz
+│       │   │   ├── reaction2_re_prod.xyz
+│       │   │   ├── resub_frames.sh
+│       │   │   ├── run.sh
+│       │   │   ├── sub.sh
+│       │   │   ├── submit_template.sh
+│       │   │   ├── trajectory.xyz
+│       │   │   └── xyz2lmp.sh
+│       │   ├── reaction2_re_prod.xyz
+│       │   ├── sub.sh
+│       │   ├── trajectory.xyz
+│       │   └── xyz2lmp.sh
+│       └── times-new-roman
+│           └── times.ttf
+├── Surface_reconstruct
+│   ├── bks
+│   │   ├── backup_bks
+│   │   │   ├── get_last_xyz.sh
+│   │   │   ├── input.lammps
+│   │   │   ├── plt_reconstruct.gp
+│   │   │   ├── plumed_SiO_surf_reconstruct.dat
+│   │   │   ├── potential_SiO2.TPF
+│   │   │   ├── sio2_surf_o_slab_240_addH_opt_modified_charges.lmp
+│   │   │   ├── submit_lmp_bks.sh
+│   │   │   ├── submit_xtb.sh
+│   │   │   └── submit_xyz_wrap.sh
+│   │   ├── batch_sub.sh
+│   │   ├── combine_last_frame_xyz.sh
+│   │   ├── combine_plt.py
+│   │   ├── combine_plt.sh
+│   │   ├── combine_plt_new.py
+│   │   ├── scancel.sh
+│   │   ├── sub_rm.sh
+│   │   ├── submit_sbatch_sub.sh
+│   │   └── times-new-roman
+│   │       └── times.ttf
+│   ├── deepmd
+│   │   ├── backup
+│   │   │   ├── get_last_xyz.sh
+│   │   │   ├── input.lammps
+│   │   │   ├── plt_reconstruct.gp
+│   │   │   ├── plumed_SiO_surf_reconstruct.dat
+│   │   │   ├── reconstruction_A_87_addH_opt.xyz
+│   │   │   ├── submit_lmp.sh
+│   │   │   ├── submit_xtb.sh
+│   │   │   ├── submit_xyz_wrap.sh
+│   │   │   └── xyz_wrap.sh
+│   │   ├── batch_sub.sh
+│   │   ├── combine_last_frame_xyz.sh
+│   │   ├── combine_plt.py
+│   │   ├── combine_plt.sh
+│   │   ├── combine_plt_new.py
+│   │   ├── scancel.sh
+│   │   ├── sub_rm.sh
+│   │   ├── submit_sbatch_sub.sh
+│   │   └── times-new-roman
+│   │       └── times.ttf
+│   └── reaxff
+│       ├── backup_reaxff
+│       │   ├── ffield.reax
+│       │   ├── get_last_xyz.sh
+│       │   ├── input.lammps
+│       │   ├── plt_reconstruct.gp
+│       │   ├── plumed_SiO_surf_reconstruct_O_absorb.dat
+│       │   ├── reconstruction_A_87_addH_opt.xyz
+│       │   ├── submit_lmp.sh
+│       │   ├── submit_xtb.sh
+│       │   ├── submit_xyz_wrap.sh
+│       │   └── xyz_wrap.sh
+│       ├── batch_sub.sh
+│       ├── combine_last_frame_xyz.sh
+│       ├── combine_plt.py
+│       ├── combine_plt.sh
+│       ├── combine_plt_new.py
+│       ├── scancel.sh
+│       ├── sub_rm.sh
+│       ├── submit_sbatch_sub.sh
+│       └── times-new-roman
+│           └── times.ttf
+├── readme.md
+└── tree.log
+
+113 directories, 1324 files

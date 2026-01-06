@@ -1,0 +1,8 @@
+Frame,Energy(kcal/mol),Source
+frame_0,0.0,./reaction2/dft_PBE/energies.csv
+frame_1,32.848669999977574,./reaction2/dft_PBE/energies.csv
+frame_2,87.07199000008404,./reaction2/dft_PBE/energies.csv
+frame_3,117.56136000016704,./reaction2/dft_PBE/energies.csv
+frame_4,118.51323000015691,./reaction2/dft_PBE/energies.csv
+frame_5,116.37132000015117,./reaction2/dft_PBE/energies.csv
+frame_6,123.34794000000693,./reaction2/dft_PBE/energies.csv

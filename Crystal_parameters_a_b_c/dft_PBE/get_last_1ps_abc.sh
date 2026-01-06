@@ -1,0 +1,2 @@
+#sed -n '311,321p' SiO2_crystallisation_melt_3DSF_pbe-1.cell | awk '{sum8+=$8; sum9+=$9; sum10+=$10} END {print "晶体参数最后1ps平均分别是: \na(Å):", sum8/NR, "\nb(Å):", sum9/NR, "\nc(Å):", sum10/NR}'
+tail -n 10 SiO2_crystallisation_melt_3DSF_pbe-1.cell | awk '{sum3+=$3; sum7+=$7; sum11+=$11} END {printf "晶体参数最后1ps平均分别是:\na(Å): %.4f\nb(Å): %.4f\nc(Å): %.4f\n", sum3/NR, sum7/NR, sum11/NR}'

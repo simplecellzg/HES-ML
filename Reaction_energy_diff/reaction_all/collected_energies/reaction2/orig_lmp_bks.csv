@@ -1,0 +1,8 @@
+Frame,Energy(kcal/mol),Source
+frame_000,-107079.235,./reaction2/lmp_bks/energies.csv
+frame_001,-107084.8562,./reaction2/lmp_bks/energies.csv
+frame_002,-107083.9398,./reaction2/lmp_bks/energies.csv
+frame_003,-107088.8188,./reaction2/lmp_bks/energies.csv
+frame_004,-107088.3164,./reaction2/lmp_bks/energies.csv
+frame_005,-107066.6393,./reaction2/lmp_bks/energies.csv
+frame_006,-107012.1871,./reaction2/lmp_bks/energies.csv

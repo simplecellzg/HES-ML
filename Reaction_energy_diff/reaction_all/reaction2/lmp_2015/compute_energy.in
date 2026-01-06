@@ -1,0 +1,19 @@
+units real
+atom_style charge
+read_data ${datafile}
+
+# ---------- 力场与电荷平衡 ----------
+pair_style reaxff NULL
+pair_coeff * * ../ffield.reax Si O H
+fix gsi_qeq all qeq/reaxff 1 0 10 1e-6 reaxff
+ # 根据体系元素调整顺序
+
+neighbor 2.0 bin
+neigh_modify every 1 delay 10 check yes
+
+thermo 1
+thermo_style custom step pe
+thermo_modify format float "%10.5f"
+
+
+run 0

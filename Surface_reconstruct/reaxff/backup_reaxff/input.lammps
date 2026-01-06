@@ -1,0 +1,49 @@
+variable        NSTEPS          equal 50000
+variable        THERMO_FREQ     equal 10
+variable        DUMP_FREQ       equal 10
+variable        TEMP            equal 500
+variable        TAU_T           equal 100.0
+
+units real
+boundary p p f
+atom_style charge
+
+neighbor        1.0 bin
+
+read_data       sio2_surf_o_slab_240_addH_opt.lmp
+pair_style reaxff NULL safezone 3
+pair_coeff * * ffield.reax Si O H
+fix gsi_qeq all qeq/reaxff 1 0 10 1e-6 reaxff
+
+#pair_style      deepmd graph_compressed_20241109_clean_2.pb
+#pair_coeff      * * Si O H
+
+fix             PLUMED  all plumed plumedfile plumed_SiO_surf_reconstruct.dat outfile PLUMED.OUT
+
+
+thermo_style    custom step temp pe ke etotal press vol lx ly lz xy xz yz
+thermo          ${THERMO_FREQ}
+thermo_modify lost ignore flush yes
+
+dump            1 all custom ${DUMP_FREQ} SiO2.lammpstrj id element x y z
+dump_modify     1 element Si O H
+dump            2 all xyz ${DUMP_FREQ} SiO2.lammpstrj.xyz 
+dump_modify     2 element Si O H
+
+#region          outputregion block INF INF INF INF 7.0 INF units box
+#group           outputgroup region outputregion
+dump            3 all xyz ${NSTEPS} dump.lastframe.xyz
+dump_modify     3 element Si O H
+
+velocity        all create ${TEMP} 743574
+fix             1 all nvt temp ${TEMP} ${TEMP} ${TAU_T}
+#fix             1 all npt temp ${TEMP} ${TEMP} ${TAU_T} iso 1.0 1.0 1.0
+
+region          bottom block INF INF INF INF INF 3.6 
+group           bottom region bottom
+fix             2 bottom setforce 0 0 0
+velocity        bottom set 0 0 0
+
+timestep        0.2
+run_style       verlet
+run             ${NSTEPS}

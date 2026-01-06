@@ -1,0 +1,314 @@
+--------------------------------------------------------------------------
+WARNING: No preset parameters were found for the device that Open MPI
+detected:
+
+  Local host:            paraai-n32-h-01-agent-19
+  Device name:           mlx5_0
+  Device vendor ID:      0x02c9
+  Device vendor part ID: 4125
+
+Default device parameters will be used, which may result in lower
+performance.  You can edit any of the files specified by the
+btl_openib_device_param_files MCA parameter to set values for your
+device.
+
+NOTE: You can turn off this warning by setting the MCA parameter
+      btl_openib_warn_no_device_params_found to 0.
+--------------------------------------------------------------------------
+--------------------------------------------------------------------------
+No OpenFabrics connection schemes reported that they were able to be
+used on a specific port.  As such, the openib BTL (OpenFabrics
+support) will be disabled for this port.
+
+  Local host:           paraai-n32-h-01-agent-19
+  Local device:         mlx5_0
+  Local port:           1
+  CPCs attempted:       rdmacm, udcm
+--------------------------------------------------------------------------
+
+Large-scale Atomic/Molecular Massively Parallel Simulator - 12 Jun 2025
+
+Usage example: lmp_mpi -var t 300 -echo screen -in in.alloy
+
+List of command-line options supported by this LAMMPS executable:
+
+-echo none/screen/log/both  : echoing of input script (-e)
+-help                       : print this help message (-h)
+-in none/filename           : read input from file or stdin (default) (-i)
+-kokkos on/off ...          : turn KOKKOS mode on or off (-k)
+-log none/filename          : where to send log output (-l)
+-mdi '<mdi flags>'          : pass flags to the MolSSI Driver Interface
+-mpicolor color             : which exe in a multi-exe mpirun cmd (-m)
+-cite                       : select citation reminder style (-c)
+-nocite                     : disable citation reminder (-nc)
+-nonbuf                     : disable screen/logfile buffering (-nb)
+-package style ...          : invoke package command (-pk)
+-partition size1 size2 ...  : assign partition sizes (-p)
+-plog basename              : basename for partition logs (-pl)
+-pscreen basename           : basename for partition screens (-ps)
+-restart2data rfile dfile ... : convert restart to data file (-r2data)
+-restart2dump rfile dgroup dstyle dfile ... 
+                            : convert restart to dump file (-r2dump)
+-restart2info rfile         : print info about restart rfile (-r2info)
+-reorder topology-specs     : processor reordering (-r)
+-screen none/filename       : where to send screen output (-sc)
+-skiprun                    : skip loops in run and minimize (-sr)
+-suffix gpu/intel/kk/opt/omp: style suffix to apply (-sf)
+-var varname value          : set index style variable (-v)
+
+OS: Linux "Kylin Linux Advanced Server V10 (Sword)" 4.19.90-24.4.v2101.ky10.aarch64 aarch64
+
+Compiler: GNU C++ 11.3.0 with OpenMP 4.5
+C++ standard: C++17
+Embedded fmt library version: 10.2.0
+Embedded JSON class version: 3.12.0
+
+MPI v3.1: Open MPI v4.1.5, package: Open MPI scx6001@paraai-n32-h-01-agent-23 Distribution, ident: 4.1.5, repo rev: v4.1.5, Feb 23, 2023
+
+Accelerator configuration:
+
+GPU package API:
+GPU package precision: mixed
+KOKKOS package API: OpenMP
+KOKKOS package precision: double
+Kokkos library version: 4.6.0
+
+Compatible GPU present: yes
+
+FFT information:
+
+FFT precision  = double
+FFT engine  = mpiFFT
+FFT library = KISS
+KOKKOS FFT engine  = mpiFFT
+KOKKOS FFT library = KISS
+
+Active compile time flags:
+
+-DLAMMPS_GZIP
+-DLAMMPS_SMALLBIG
+sizeof(smallint): 32-bit
+sizeof(imageint): 32-bit
+sizeof(tagint):   32-bit
+sizeof(bigint):   64-bit
+
+Available compression formats:
+
+Extension: .gz     Command: gzip
+Extension: .bz2    Command: bzip2
+Extension: .zst    Command: zstd
+Extension: .xz     Command: xz
+Extension: .lzma   Command: xz
+Extension: .lz4    Command: lz4
+
+
+Installed packages:
+
+MOLECULE KSPACE EXTRA-FIX GPU KOKKOS MC MEAM REAXFF 
+
+List of individual style options included in this LAMMPS executable
+
+* Atom styles:
+
+angle           angle/kk        atomic          atomic/kk       body            
+bond            bond/kk         charge          charge/kk       ellipsoid       
+full            full/kk         hybrid          hybrid/kk       line            
+molecular       molecular/kk    sphere          sphere/kk       template        
+tri             
+
+* Integrate styles:
+
+respa           verlet          verlet/kk       
+
+* Minimize styles:
+
+cg              cg/kk           fire/old        fire            hftn            
+quickmin        sd              
+
+* Pair styles:
+
+born            born/coul/long  born/coul/long/gpu              born/coul/msm   
+born/gpu        buck            buck/coul/cut   buck/coul/cut/gpu               
+buck/coul/cut/kk                buck/coul/long  buck/coul/long/gpu              
+buck/coul/long/kk               buck/coul/msm   buck/gpu        buck/kk         
+buck/long/coul/long             coul/cut        coul/cut/gpu    coul/cut/kk     
+coul/debye      coul/debye/gpu  coul/debye/kk   coul/dsf        coul/dsf/gpu    
+coul/dsf/kk     coul/long       coul/long/gpu   coul/long/kk    coul/msm        
+coul/streitz    coul/wolf       coul/wolf/kk    deepmd          deepspin        
+meam/c          reax            reax/c          mesont/tpm      dsmc            
+hbond/dreiding/lj               hbond/dreiding/morse            hybrid          
+hybrid/omp      hybrid/kk       hybrid/molecular                
+hybrid/molecular/omp            hybrid/overlay  hybrid/overlay/omp              
+hybrid/overlay/kk               hybrid/scaled   hybrid/scaled/omp               
+lj/charmm/coul/charmm           lj/charmm/coul/charmm/gpu       
+lj/charmm/coul/charmm/implicit  lj/charmm/coul/charmm/implicit/kk               
+lj/charmm/coul/charmm/kk        lj/charmm/coul/long             
+lj/charmm/coul/long/gpu         lj/charmm/coul/long/kk          
+lj/charmm/coul/msm              lj/charmmfsw/coul/charmmfsh     
+lj/charmmfsw/coul/long          lj/charmmfsw/coul/long/kk       lj/cut          
+lj/cut/coul/cut lj/cut/coul/cut/gpu             lj/cut/coul/cut/kk              
+lj/cut/coul/long                lj/cut/coul/long/gpu            
+lj/cut/coul/long/kk             lj/cut/coul/msm lj/cut/coul/msm/gpu             
+lj/cut/gpu      lj/cut/kk       lj/cut/tip4p/cut                
+lj/cut/tip4p/long               lj/cut/tip4p/long/gpu           lj/expand       
+lj/expand/gpu   lj/expand/kk    lj/long/coul/long               
+lj/long/tip4p/long              meam            meam/kk         meam/ms         
+meam/ms/kk      morse           morse/gpu       morse/kk        reaxff          
+reaxff/kk       soft            soft/gpu        soft/kk         table           
+table/gpu       table/kk        tip4p/cut       tip4p/long      yukawa          
+yukawa/gpu      yukawa/kk       zbl             zbl/gpu         zbl/kk          
+zero            
+
+* Bond styles:
+
+fene            fene/expand     fene/kk         gromos          harmonic        
+harmonic/kk     hybrid          hybrid/kk       morse           quartic         
+table           zero            
+
+* Angle styles:
+
+charmm          charmm/kk       cosine          cosine/kk       cosine/squared  
+harmonic        harmonic/kk     hybrid          hybrid/kk       table           
+zero            
+
+* Dihedral styles:
+
+charmm          charmm/kk       charmmfsw       charmmfsw/kk    harmonic        
+harmonic/kk     hybrid          hybrid/kk       multi/harmonic  opls            
+opls/kk         table           zero            
+
+* Improper styles:
+
+cvff            harmonic        harmonic/kk     hybrid          hybrid/kk       
+umbrella        zero            
+
+* KSpace styles:
+
+ewald           ewald/dipole    ewald/dipole/spin               ewald/disp      
+ewald/disp/dipole               zero            msm             msm/cg          
+pppm            pppm/cg         pppm/dipole     pppm/dipole/spin                
+pppm/disp       pppm/disp/tip4p pppm/dplr       pppm/gpu        pppm/kk         
+pppm/stagger    pppm/tip4p      
+
+* Fix styles
+
+acks2/reax      acks2/reaxff    acks2/reaxff/kk acks2/reax/kk   adapt           
+addforce        addtorque       atom/swap       ave/atom        ave/chunk       
+ave/correlate   ave/correlate/long              ave/grid        ave/histo       
+ave/histo/weight                ave/moments     ave/time        aveforce        
+balance         bond/break      bond/create     bond/create/angle               
+bond/swap       box/relax       charge/regulation               cmap            
+cmap/kk         controller      deform          deform/kk       deform/pressure 
+deposit         ave/spatial     ave/spatial/sphere              lb/pc           
+lb/rigid/pc/sphere              reax/c/bonds    reax/c/species  dplr            
+drag            dt/reset        dt/reset/kk     efield          efield/kk       
+efield/tip4p    electron/stopping               electron/stopping/fit           
+enforce2d       enforce2d/kk    evaporate       external        ffl             
+filter/corotate flow/gauss      gcmc            gjf             gld             
+gle             gravity         gravity/kk      halt            heat            
+indent          langevin        langevin/kk     lineforce       mol/swap        
+momentum        momentum/chunk  momentum/kk     move            
+nonaffine/displacement          nph             nph/kk          nph/sphere      
+npt             npt/cauchy      npt/gpu         npt/kk          npt/sphere      
+numdiff         numdiff/virial  nve             nve/gpu         nve/kk          
+nve/limit       nve/limit/kk    nve/noforce     nve/sphere      nve/sphere/kk   
+nvk             nvt             nvt/gpu         nvt/kk          nvt/sllod       
+nvt/sllod/kk    nvt/sphere      oneway          pafi            pair            
+planeforce      press/berendsen press/langevin  print           property/atom   
+property/atom/kk                qeq/reaxff      qeq/reax        qeq/reaxff/kk   
+qeq/reax/kk     qeq/rel/reaxff  qtpie/reaxff    reaxff/bonds    reaxff/bonds/kk 
+reaxff/species  reaxff/species/kk               recenter        recenter/kk     
+restrain        rhok            set             setforce        setforce/kk     
+smd             spring          spring/chunk    spring/rg       spring/self     
+spring/self/kk  store/force     store/state     temp/berendsen  
+temp/berendsen/kk               temp/csld       temp/csvr       temp/rescale    
+temp/rescale/kk tfmc            thermal/conductivity            ti/spring       
+tmd             ttm             ttm/grid        ttm/mod         tune/kspace     
+vector          viscosity       viscous         viscous/kk      viscous/sphere  
+wall/ees        wall/flow       wall/flow/kk    wall/harmonic   wall/lj1043     
+wall/lj126      wall/lj93       wall/lj93/kk    wall/morse      wall/reflect    
+wall/reflect/kk wall/reflect/stochastic         wall/region     wall/region/ees 
+wall/region/kk  wall/table      widom           
+
+* Compute styles:
+
+aggregate/atom  angle           angle/local     angmom/chunk    bond            
+bond/local      centro/atom     centroid/stress/atom            chunk/atom      
+chunk/spread/atom               cluster/atom    cna/atom        com             
+com/chunk       coord/atom      coord/atom/kk   count/type      deeptensor/atom 
+mesont          dihedral        dihedral/local  dipole          dipole/chunk    
+displace/atom   erotate/sphere  erotate/sphere/atom             
+erotate/sphere/kk               fragment/atom   global/atom     group/group     
+gyration        gyration/chunk  heat/flux       improper        improper/local  
+inertia/chunk   ke              ke/atom         msd             msd/chunk       
+omega/chunk     orientorder/atom                orientorder/atom/kk             
+pair            pair/local      pe              pe/atom         pressure        
+property/atom   property/chunk  property/grid   property/local  rdf             
+reaxff/atom     reaxff/atom/kk  reduce          reduce/chunk    reduce/region   
+slice           stress/atom     temp            temp/chunk      temp/com        
+temp/deform     temp/deform/kk  temp/kk         temp/partial    temp/profile    
+temp/ramp       temp/region     temp/sphere     torque/chunk    vacf            
+vacf/chunk      vcm/chunk       
+
+* Region styles:
+
+block           block/kk        cone            cylinder        ellipsoid       
+intersect       plane           prism           sphere          sphere/kk       
+union           
+
+* Dump styles:
+
+atom            cfg             custom          atom/mpiio      cfg/mpiio       
+custom/mpiio    xyz/mpiio       grid            grid/vtk        image           
+local           movie           xyz             
+
+* Command styles
+
+angle_write     balance         change_box      create_atoms    create_bonds    
+create_box      delete_atoms    delete_bonds    box             kim_init        
+kim_interactions                kim_param       kim_property    kim_query       
+reset_ids       reset_atom_ids  reset_mol_ids   message         server          
+dihedral_write  displace_atoms  info            minimize        read_data       
+read_dump       read_restart    replicate       rerun           run             
+set             velocity        write_coeff     write_data      write_dump      
+write_restart   
+
+[paraai-n32-h-01-agent-19:3715345] 3 more processes have sent help message help-mpi-btl-openib.txt / no device params found
+[paraai-n32-h-01-agent-19:3715345] Set MCA parameter "orte_base_help_aggregate" to 0 to see all help / error messages
+[paraai-n32-h-01-agent-19:3715345] 3 more processes have sent help message help-mpi-btl-openib-cpc-base.txt / no cpcs for port
+--------------------------------------------------------------------------
+WARNING: No preset parameters were found for the device that Open MPI
+detected:
+
+  Local host:            paraai-n32-h-01-agent-19
+  Device name:           mlx5_0
+  Device vendor ID:      0x02c9
+  Device vendor part ID: 4125
+
+Default device parameters will be used, which may result in lower
+performance.  You can edit any of the files specified by the
+btl_openib_device_param_files MCA parameter to set values for your
+device.
+
+NOTE: You can turn off this warning by setting the MCA parameter
+      btl_openib_warn_no_device_params_found to 0.
+--------------------------------------------------------------------------
+--------------------------------------------------------------------------
+No OpenFabrics connection schemes reported that they were able to be
+used on a specific port.  As such, the openib BTL (OpenFabrics
+support) will be disabled for this port.
+
+  Local host:           paraai-n32-h-01-agent-19
+  Local device:         mlx5_0
+  Local port:           1
+  CPCs attempted:       rdmacm, udcm
+--------------------------------------------------------------------------
+DeePMD-kit WARNING: Environmental variable DP_INTRA_OP_PARALLELISM_THREADS is not set. Tune DP_INTRA_OP_PARALLELISM_THREADS for the best performance. See https://deepmd.rtfd.io/parallelism/ for more information.
+DeePMD-kit WARNING: Environmental variable DP_INTER_OP_PARALLELISM_THREADS is not set. Tune DP_INTER_OP_PARALLELISM_THREADS for the best performance. See https://deepmd.rtfd.io/parallelism/ for more information.
+DeePMD-kit WARNING: Environmental variable DP_INTRA_OP_PARALLELISM_THREADS is not set. Tune DP_INTRA_OP_PARALLELISM_THREADS for the best performance. See https://deepmd.rtfd.io/parallelism/ for more information.
+DeePMD-kit WARNING: Environmental variable DP_INTER_OP_PARALLELISM_THREADS is not set. Tune DP_INTER_OP_PARALLELISM_THREADS for the best performance. See https://deepmd.rtfd.io/parallelism/ for more information.
+2025-10-13 11:03:26.625373: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1635] Created device /job:localhost/replica:0/task:0/device:GPU:0 with 36305 MB memory:  -> device: 0, name: NVIDIA A100-PCIE-40GB, pci bus id: 0000:81:00.0, compute capability: 8.0
+2025-10-13 11:03:26.701697: I tensorflow/compiler/mlir/mlir_graph_optimization_pass.cc:353] MLIR V1 optimization pass is not enabled
+[paraai-n32-h-01-agent-19:3715371] 3 more processes have sent help message help-mpi-btl-openib.txt / no device params found
+[paraai-n32-h-01-agent-19:3715371] Set MCA parameter "orte_base_help_aggregate" to 0 to see all help / error messages
+[paraai-n32-h-01-agent-19:3715371] 3 more processes have sent help message help-mpi-btl-openib-cpc-base.txt / no cpcs for port

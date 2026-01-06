@@ -1,0 +1,30 @@
+
+======================================================================
+NATURE-STYLE TIME-COVERAGE ANALYSIS
+======================================================================
+
+Reading GCMC adsorption data...
+
+Plotting time-coverage relationship...
+成功加载Times New Roman字体
+
+Saved: ads_gcmc_md_time_coverage_analysis_nature.[png/pdf]
+
+======================================================================
+TIME-COVERAGE ANALYSIS STATISTICS
+======================================================================
+Time range: 0.00 - 30.00 ps
+Coverage range: 0.000000 - 0.013291 atom/Å²
+Final coverage: 0.012453 atom/Å²
+
+Last 50% statistics:
+  Time range: 15.00 - 30.00 ps
+  Coverage average: 0.012640 atom/Å²
+  Coverage std: 0.000236 atom/Å²
+
+Overall statistics:
+  Coverage average: 0.009834 ± 0.004061 atom/Å²
+  Total O atoms adsorbed: 104.0
+======================================================================
+
+Analysis completed successfully!

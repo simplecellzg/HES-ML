@@ -1,0 +1,18 @@
+units real
+atom_style charge
+read_data ${datafile}
+
+# ---------- 力场与电荷平衡 ----------
+pair_style     deepmd ../graph_compressed_20241109_clean_2.pb
+pair_coeff      * * Si O
+ # 根据体系元素调整顺序
+
+neighbor 2.0 bin
+neigh_modify every 1 delay 10 check yes
+
+thermo 1
+thermo_style custom step pe
+thermo_modify format float "%10.5f"
+
+
+run 0

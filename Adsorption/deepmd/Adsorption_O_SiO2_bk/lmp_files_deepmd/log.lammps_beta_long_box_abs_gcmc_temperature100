@@ -1,0 +1,161 @@
+LAMMPS (12 Jun 2025)
+  using 1 OpenMP thread(s) per MPI task
+Reading data file ...
+  orthogonal box = (0 0 0) to (98.26 85.096 100)
+  1 by 1 by 1 MPI processor grid
+  reading atoms ...
+  10800 atoms
+  reading velocities ...
+  10800 velocities
+  read_data CPU = 0.073 seconds
+Summary of lammps deepmd module ...
+  >>> Info of deepmd-kit:
+  installed to:       /home/bingxing2/home/scx7113/soft/deepmd-kit-3.1.0/install
+  source:             
+  source branch:      
+  source commit:      
+  source commit at:   
+  support model ver.: 1.1 
+  build variant:      cuda
+  build with tf inc:  /home/bingxing2/home/scx7113/.conda/envs/dp310/lib/python3.11/site-packages/tensorflow/include;/home/bingxing2/home/scx7113/.conda/envs/dp310/lib/python3.11/site-packages/tensorflow/include
+  build with tf lib:  /home/bingxing2/home/scx7113/.conda/envs/dp310/lib/python3.11/site-packages/tensorflow/libtensorflow_cc.so.2
+  set tf intra_op_parallelism_threads: 0
+  set tf inter_op_parallelism_threads: 0
+  >>> Info of lammps module:
+  use deepmd-kit at:  /home/bingxing2/home/scx7113/soft/deepmd-kit-3.1.0/install
+  source:             
+  source branch:      
+  source commit:      
+  source commit at:   
+  build with inc:     
+  build with lib:     /home/bingxing2/home/scx7113/.conda/envs/dp310/lib/python3.11/site-packages/tensorflow
+  >>> Info of model(s):
+  using   1 model(s): graph_compressed_20241109_clean_2.pb 
+  rcut in model:      6
+  ntypes in model:    3
+3600 atoms in group Si_atoms
+7200 atoms in group O_surface
+0 atoms in group O_adsorbed
+10800 atoms in group Si_O_atoms
+3600 atoms in group fixed_atoms
+7200 atoms in group thermo_atoms
+==========================================
+Starting relaxation at 100 K
+==========================================
+
+CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE
+
+Your simulation uses code contributions which should be cited:
+- USER-DEEPMD package:
+The log file lists these citations in BibTeX format.
+
+CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE
+
+Generated 0 of 3 mixed pair_coeff terms from geometric mixing rule
+Neighbor list info ...
+  update: every = 1 steps, delay = 0 steps, check = yes
+  max neighbors/atom: 2000, page size: 100000
+  master list distance cutoff = 8
+  ghost atom cutoff = 8
+  binsize = 4, bins = 25 22 25
+  1 neighbor lists, perpetual/occasional/extra = 1 0 0
+  (1) pair deepmd, perpetual
+      attributes: full, newton on
+      pair build: full/bin/atomonly
+      stencil: full/bin/3d
+      bin: standard
+Setting up Verlet run ...
+  Unit style    : metal
+  Current step  : 0
+  Time step     : 0.0002
+Per MPI rank memory allocation (min/avg/max) = 12.38 | 12.38 | 12.38 Mbytes
+   Step          Temp          PotEng         KinEng         TotEng        Atoms   
+         0   497.54651     -3540735.3      694.51537     -3540040.7          10800 
+      1000   66.055487     -3541377.7      92.205554     -3541285.5          10800 
+      2000   65.936488     -3541368.3      92.039445     -3541276.3          10800 
+      3000   67.046248     -3541365.9      93.588537     -3541272.3          10800 
+      4000   65.94082      -3541369.9      92.045492     -3541277.8          10800 
+      5000   66.468617     -3541362.1      92.782233     -3541269.3          10800 
+      6000   66.311062     -3541372.5      92.562305     -3541279.9          10800 
+      7000   66.960647     -3541363.3      93.469048     -3541269.9          10800 
+      8000   67.718955     -3541368.3      94.527555     -3541273.8          10800 
+      9000   66.498099     -3541370.9      92.823387     -3541278            10800 
+     10000   67.246932     -3541365.4      93.868668     -3541271.5          10800 
+     11000   66.536075     -3541371.7      92.876397     -3541278.8          10800 
+     12000   66.019717     -3541368.1      92.155622     -3541275.9          10800 
+     13000   67.245202     -3541368.8      93.866254     -3541274.9          10800 
+     14000   66.571481     -3541368.9      92.925819     -3541276            10800 
+     15000   66.639954     -3541367.6      93.0214       -3541274.6          10800 
+     16000   65.381506     -3541369.8      91.264756     -3541278.5          10800 
+     17000   66.796762     -3541368.6      93.240285     -3541275.3          10800 
+     18000   65.593225     -3541367.8      91.560291     -3541276.2          10800 
+     19000   67.239111     -3541367.9      93.857751     -3541274            10800 
+     20000   68.281885     -3541369.2      95.313339     -3541273.9          10800 
+     21000   65.765374     -3541369.4      91.800591     -3541277.6          10800 
+     22000   66.856035     -3541370.7      93.323023     -3541277.3          10800 
+     23000   66.073492     -3541367.6      92.230686     -3541275.3          10800 
+     24000   67.022041     -3541369        93.554747     -3541275.4          10800 
+     25000   66.830016     -3541369.6      93.286703     -3541276.3          10800 
+     26000   67.713032     -3541368        94.519288     -3541273.4          10800 
+     27000   66.942051     -3541368.3      93.443091     -3541274.8          10800 
+     28000   67.663585     -3541370        94.450265     -3541275.5          10800 
+     29000   67.071858     -3541368.6      93.624286     -3541275            10800 
+     30000   66.027461     -3541369.1      92.166433     -3541277            10800 
+     31000   66.690574     -3541370        93.092059     -3541276.9          10800 
+     32000   66.372104     -3541369.3      92.647513     -3541276.6          10800 
+     33000   65.970249     -3541369.6      92.086572     -3541277.6          10800 
+     34000   66.542862     -3541368        92.88587      -3541275.2          10800 
+     35000   67.167372     -3541369.7      93.757612     -3541275.9          10800 
+     36000   66.938921     -3541367        93.438722     -3541273.6          10800 
+     37000   67.005673     -3541367.9      93.531899     -3541274.3          10800 
+     38000   66.637083     -3541371.1      93.017391     -3541278.1          10800 
+     39000   66.980709     -3541366.6      93.497052     -3541273.1          10800 
+     40000   66.40005      -3541370.5      92.686522     -3541277.8          10800 
+     41000   66.275241     -3541367.7      92.512304     -3541275.2          10800 
+     42000   66.184288     -3541367.2      92.385345     -3541274.9          10800 
+     43000   66.107833     -3541367.7      92.278623     -3541275.4          10800 
+     44000   66.167309     -3541369        92.361643     -3541276.6          10800 
+     45000   66.703043     -3541369.1      93.109465     -3541275.9          10800 
+     46000   66.798541     -3541367.6      93.242767     -3541274.3          10800 
+     47000   66.500448     -3541369.8      92.826665     -3541276.9          10800 
+     48000   66.753824     -3541366.6      93.180348     -3541273.4          10800 
+     49000   66.776006     -3541370.2      93.211312     -3541277            10800 
+     50000   66.590197     -3541369.2      92.951945     -3541276.3          10800 
+Loop time of 767.952 on 1 procs for 50000 steps with 10800 atoms
+
+Performance: 1.125 ns/day, 21.332 hours/ns, 65.108 timesteps/s, 703.169 katom-step/s
+98.7% CPU use with 1 MPI tasks x 1 OpenMP threads
+
+MPI task timing breakdown:
+Section |  min time  |  avg time  |  max time  |%varavg| %total
+---------------------------------------------------------------
+Pair    | 742.96     | 742.96     | 742.96     |   0.0 | 96.75
+Neigh   | 0.041983   | 0.041983   | 0.041983   |   0.0 |  0.01
+Comm    | 6.1277     | 6.1277     | 6.1277     |   0.0 |  0.80
+Output  | 0.11831    | 0.11831    | 0.11831    |   0.0 |  0.02
+Modify  | 14.78      | 14.78      | 14.78      |   0.0 |  1.92
+Other   |            | 3.921      |            |       |  0.51
+
+Nlocal:          10800 ave       10800 max       10800 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+Nghost:          11726 ave       11726 max       11726 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+Neighs:              0 ave           0 max           0 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+FullNghs:  1.51276e+06 ave 1.51276e+06 max 1.51276e+06 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+
+Total # of neighbors = 1512758
+Ave neighs/atom = 140.07019
+Neighbor list builds = 1
+Dangerous builds = 0
+System init for write_data ...
+Generated 0 of 3 mixed pair_coeff terms from geometric mixing rule
+Relaxation at 100 K completed
+Structure saved as 100k.lmp
+
+==========================================
+All temperature relaxations completed!
+Output files: 100k.lmp, 200k.lmp, 400k.lmp, 600k.lmp, 800k.lmp, 1000k.lmp
+==========================================
+Total wall time: 0:12:56

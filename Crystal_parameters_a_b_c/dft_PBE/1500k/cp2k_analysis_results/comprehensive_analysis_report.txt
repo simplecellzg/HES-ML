@@ -1,0 +1,48 @@
+SiO2 System Structure Analysis Report (CP2K)
+==================================================
+
+Analysis Parameters:
+- Total frames: 2001
+- Analyzed frames: 1000
+- RDF r_max: 6.67 Angstrom
+- Cell parameters: a=14.956, b=17.270, c=16.417 Angstrom
+- Computation time: RDF 7.1s, bonds and angles 763.2s
+
+System Composition:
+- Si atoms: 108
+- O atoms: 216
+- Total atoms: 324
+- Chemical formula ratio Si:O = 1:2.00
+
+RDF First Peak Positions:
+- O-O: 2.65 Angstrom
+- Si-O: 1.62 Angstrom
+- Si-Si: 3.12 Angstrom
+
+Bond Length Statistics:
+- Si-O:
+  * Mean: 1.646 ± 0.070 Angstrom
+  * Range: 1.404 - 2.003 Angstrom
+  * Bonds/frame: 432.0
+- Si-Si:
+  * Mean: 3.109 ± 0.126 Angstrom
+  * Range: 2.576 - 3.616 Angstrom
+  * Bonds/frame: 216.0
+- O-O:
+  * Mean: 2.689 ± 0.154 Angstrom
+  * Range: 2.098 - 3.051 Angstrom
+  * Bonds/frame: 689.7
+
+Bond Angle Statistics:
+- O-Si-O:
+  * Mean: 109.2 ± 8.4 degrees
+  * Range: 79.5 - 147.1 degrees
+  * Angles/frame: 648.0
+- Si-O-Si:
+  * Mean: 143.9 ± 13.0 degrees
+  * Range: 101.1 - 179.8 degrees
+  * Angles/frame: 216.0
+
+Coordination Numbers:
+- Average Si coordination number (O neighbors): 8.00
+- Average O coordination number (Si neighbors): 4.00

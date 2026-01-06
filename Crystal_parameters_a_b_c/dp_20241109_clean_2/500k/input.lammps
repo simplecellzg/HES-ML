@@ -1,0 +1,60 @@
+# ---------- 基本参数设置 ----------
+variable RELAX_STEPS    equal 10000    # 2 ps = 10000 * 0.0002 ps/step
+variable PROD_STEPS     equal 25000    # 5 ps = 25000 * 0.0002 ps/step
+variable TIMESTEP       equal 0.2      # 时间步长0.2fs
+variable THERMO_FREQ    equal 500      # 热力学输出频率（500步 = 0.1 ps）
+variable DUMP_FREQ      equal 500      # 轨迹输出频率（与热力学同步）
+variable TEMP           equal 500.0   # 温度 (K)
+variable TAU_T          equal 100      # 温度控制阻尼系数 (fs)
+
+# ---------- 初始化设置 ----------
+units real
+boundary p p p
+atom_style charge
+neighbor 1.0 bin
+read_data sio2_crystallisation_si108o216_solid.lmp
+#read_data sio2_crystallisation_si108o216_melted.lmp
+
+# ---------- 力场与电荷平衡 ----------
+pair_style      deepmd graph_compressed_20241109_clean_2.pb
+pair_coeff      * * Si O
+#pair_style reaxff NULL safezone 3
+#pair_coeff * * ffield.reax Si O
+#fix gsi_qeq all qeq/reaxff 1 0 10 1e-6 reaxff
+
+# ---------- 热力学输出设置（每500步+强制刷新） ----------
+thermo_style custom step temp pe ke etotal press vol lx ly lz  # 精简输出列
+thermo ${THERMO_FREQ}
+thermo_modify lost ignore flush yes  # 关键：flush yes 确保实时写入
+
+# ---------- 轨迹文件输出 ----------
+# LAMMPS custom 格式（含原子受力）
+dump 1 all custom ${DUMP_FREQ} SiO2.lammpstrj id element x y z fx fy fz vx vy vz
+dump_modify     1 element Si O
+
+# XYZ 格式（标准化可视）
+dump 2 all xyz ${DUMP_FREQ} SiO2.xyz
+dump_modify 2 element Si O
+
+# ---------- 初始状态验证 ----------
+velocity all create ${TEMP} 54321  # 重启后需重新生成速度
+min_style cg
+minimize 1e-5 1e-7 1000 10000   # 删除过高能量梯度
+run 0  # 输出初始状态
+velocity all create ${TEMP} 54231  
+
+# ---------- NPT 弛豫（2 ps） ----------
+#fix 1 all nvt temp ${TEMP} ${TEMP} ${TAU_T}
+fix 1 all npt temp ${TEMP} ${TEMP} ${TAU_T} iso 1.0 1.0 1000.0
+timestep ${TIMESTEP}
+run ${RELAX_STEPS}
+unfix 1
+
+# ---------- NPT 生产（5 ps） ----------
+fix 1 all npt temp ${TEMP} ${TEMP} ${TAU_T} iso 1.0 1.0 1000.0
+run ${PROD_STEPS}
+
+# ---------- 模拟终止 ----------
+undump 1
+undump 2
+unfix gsi_qeq

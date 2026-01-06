@@ -1,0 +1,879 @@
+# GCMC模拟: 氧原子在SiO2表面的吸附
+# 修正版本：采用variable-group动态统计方法
+# 使用deepmd势函数，包含关键约束条件
+# 添加功能：自动删除超过25A的原子
+# 修正：使用真实吸附能计算（减去单个O原子势能）
+# 新增：分阶段GCMC策略（50%-30%-20%）
+# 
+# 作者：GCMC optimization with variable-group approach
+# 日期：2024-12-25
+# 版本：GCMC 10.0 - 分阶段策略版
+
+# For style metal, these are the units:
+# mass = grams/mole
+# distance = Angstroms
+# time = picoseconds
+# energy = eV
+# velocity = Angstroms/picosecond
+# force = eV/Angstrom
+# torque = eV
+# temperature = Kelvin
+# pressure = bars
+# dynamic viscosity = Poise
+# charge = multiple of electron charge (1.0 is a proton)
+# dipole = charge*Angstroms
+# electric field = volts/Angstrom
+# density = gram/cm^dim
+
+# ===== 变量定义 =====
+variable T equal 1000               # 温度 (K)
+variable P equal 10                 # 压强 (bar)
+variable seed equal 224456
+variable dt equal 0.0002            # 时间步长 0.2 fs
+variable nvt_damp equal 0.01
+
+# GCMC相关参数（初始值，将根据阶段调整）
+variable gcmc_freq equal 5000        
+variable gcmc_ninsert equal 100     # 快速平衡阶段值
+variable gcmc_ndelete equal 100     # 快速平衡阶段值
+variable gcmc_displace equal 0.1    
+
+# 分阶段GCMC参数
+variable gcmc_ninsert_fast equal 500    # 快速平衡阶段（0-50%）
+variable gcmc_ndelete_fast equal 500    
+variable gcmc_ninsert_fine equal 100     # 精细调节阶段（50-80%）
+variable gcmc_ndelete_fine equal 100     
+variable gcmc_ninsert_equil equal 10    # 平衡采样阶段（80-100%）
+variable gcmc_ndelete_equil equal 10    
+
+# 约束参数
+variable surface_buffer equal 1.0   
+variable O_O_cutoff equal 1.5      
+variable Si_O_cutoff equal 2.0     
+variable z_max_limit equal 18.5     # 最大高度限制
+variable z_min_limit equal 12.0     # 最低高度限制
+variable z_max_insert_limit equal 17.0     # 最大高度软限制
+variable z_min_insert_limit equal 15.5     # 最低高度软限制
+variable z_Si_max_limit equal 20.0  # Si原子最大高度限制（新增）
+variable z_Si_soft_limit equal 17.0 # Si原子软限制（开始施加约束力）
+variable Si_wall_k equal 10.0      # Si约束力常数 (eV/Å²)
+variable O_wall_k equal 50.0      # O约束力常数 (eV/Å²)
+
+variable z_fixwall equal 5.0
+
+# 单个氧原子的势能（从DFT或势函数计算得到）reaxff
+variable E_O_single equal -2.3640219362704  # eV
+
+# 化学势计算参数
+# 物理常数
+variable kB equal 8.617333262e-5    # eV/K (metal单位下的玻尔兹曼常数)
+variable h equal 6.62607015e-34     # J·s (SI单位)
+variable N_A equal 6.02214076e23    # mol^-1 (阿伏伽德罗常数)
+variable eV_to_J equal 1.602176634e-19  # eV到J的转换因子
+
+# 氧原子参数
+variable m_O_gmol equal 15.999      # g/mol (metal单位下的质量)
+variable m_O_kg equal ${m_O_gmol}/${N_A}/1000  # kg (单个原子的质量)
+
+# 单位转换
+variable P_Pa equal ${P}*1e5        # bar转换为Pa
+
+# 计算热德布罗意波长
+# λ = h / sqrt(2 * π * m * k_B * T)
+# 需要将结果转换为Å
+variable pi equal 3.14159265359
+variable kB_J equal 1.380649e-23    # J/K
+variable lambda_m equal ${h}/sqrt(2*${pi}*${m_O_kg}*${kB_J}*${T})  # 米
+variable lambda_A equal ${lambda_m}*1e10  # 转换为Å
+
+# 计算理想气体化学势
+# μ = k_B * T * ln(P * λ^3 / (k_B * T))
+# 注意：这里P是Pa，k_B*T是J，λ是m
+variable kBT_J equal ${kB_J}*${T}   # J
+variable term equal ${P_Pa}*${lambda_m}*${lambda_m}*${lambda_m}/${kBT_J}
+variable mu_J equal ${kBT_J}*ln(${term})  # J
+variable mu_eV equal ${mu_J}/${eV_to_J}   # 转换为eV
+
+# 输出计算结果
+print "==========================================="
+print "LAMMPS单位系统：metal"
+print "化学势计算结果："
+print "压强 P = ${P} bar = ${P_Pa} Pa"
+print "温度 T = ${T} K"
+print "氧原子质量 = ${m_O_gmol} g/mol = ${m_O_kg} kg"
+print "热德布罗意波长 Lambda = ${lambda_m} m = ${lambda_A} Å"
+print "k_B*T = ${kB} eV = ${kBT_J} J"
+print "P*λ³/(k_B*T) = ${term}"
+print "理想气体化学势 mu = ${mu_J} J = ${mu_eV} eV"
+print "单原子能量 E_O = ${E_O_single} eV"
+print "==========================================="
+
+# ===== 时间阶段设置 =====
+variable t_per_stat equal 1.0              # 1 ps between statistics
+variable n_per_stat equal ${t_per_stat}/${dt}  # 5000 steps
+variable Ntotal equal 30                  # 总共100个统计周期 (100 ps)
+
+# 计算各阶段的时间边界
+variable Nphase1 equal ${Ntotal}*0.5       # 50个周期（50%）
+variable Nphase2 equal ${Ntotal}*0.8       # 80个周期（50%+30%）
+# Nphase3是剩余的20%
+
+print "==========================================="
+print "分阶段GCMC策略："
+print "阶段1（快速平衡）: 0-${Nphase1} ps, ninsert/delete=${gcmc_ninsert_fast}"
+print "阶段2（精细调节）: ${Nphase1}-${Nphase2} ps, ninsert/delete=${gcmc_ninsert_fine}"
+print "阶段3（平衡采样）: ${Nphase2}-${Ntotal} ps, ninsert/delete=${gcmc_ninsert_equil}"
+print "==========================================="
+
+# ===== 系统设置 =====
+units metal
+boundary p p p
+# atom_style atomic
+atom_style charge
+atom_modify map array sort 0 0.0
+
+# 读取结构
+read_data nve.lmp
+
+# 势函数设置
+# 组合DeepMD和soft排斥势
+# pair_style hybrid/overlay deepmd graph_compressed_20241109_clean_2.pb soft 3.2
+# 
+# # DeepMD应用于所有原子
+# pair_coeff * * deepmd Si O O
+# 
+# # soft势用于类型3-3的排斥
+# pair_coeff 3 3 soft 200.0  # A=100.0 kcal/mol
+# soft势: E = A * [1 + cos(π*r/rc)] for r < rc
+
+
+pair_style hybrid/overlay reaxff NULL soft 3.2
+pair_coeff * * reaxff ffield.reax Si O O
+
+# fix gsi_qeq all qeq/reaxff 1 0  10 1e-6 reaxff  
+fix gsi_qeq all qeq/reaxff 10 0 10 1e-5 reaxff maxiter 400
+
+# soft势用于类型3-3的排斥
+pair_coeff 3 3 soft 200.0  # A=100.0 kcal/mol
+# soft势: E = A * [1 + cos(π*r/rc)] for r < rc
+
+
+# pair_style reaxff NULL 
+# pair_coeff * * ffield.reax Si O O
+# 
+# # fix gsi_qeq all qeq/reaxff 1 0  10 1e-6 reaxff  
+# fix gsi_qeq all qeq/reaxff 10 0 10 1e-5 reaxff maxiter 400
+
+# ===== 邻居列表 =====
+neighbor 2.0 bin
+neigh_modify every 1 delay 0 check yes
+
+# ===== 基本compute设置 =====
+compute pos_x all property/atom x
+compute pos_y all property/atom y
+compute pos_z all property/atom z
+
+compute box_xlo all reduce min c_pos_x
+compute box_xhi all reduce max c_pos_x
+compute box_ylo all reduce min c_pos_y
+compute box_yhi all reduce max c_pos_y
+compute box_zlo all reduce min c_pos_z
+compute box_zhi all reduce max c_pos_z
+
+# 运行0步初始化
+timestep ${dt}
+run 0
+
+variable xlo equal c_box_xlo
+variable xhi equal c_box_xhi
+variable ylo equal c_box_ylo
+variable yhi equal c_box_yhi
+variable zlo equal c_box_zlo
+variable zhi equal c_box_zhi
+
+print "===== 盒子尺寸 ====="
+print "x: ${xlo} - ${xhi}"
+print "y: ${ylo} - ${yhi}"
+print "z: ${zlo} - ${zhi}"
+print "====================="
+
+# ===== 基本原子组（静态） =====
+group Si_O_atoms type 1 2
+
+# ===== 固定底部原子 =====
+region bottom block INF INF INF INF 0 ${z_fixwall}
+group fixed_atoms region bottom 
+fix 1 fixed_atoms setforce 0 0 0 
+
+# ===== Si原子高度约束 =====
+# fix Si_wall Si_O_atoms wall/harmonic zhi ${z_Si_soft_limit} ${Si_wall_k} 0.0 1.5 units box pbc yes
+
+
+print "===== Si原子高度约束设置 ====="
+print "Si原子软限制高度: ${z_Si_soft_limit} Å"
+print "Si原子硬限制高度: ${z_Si_max_limit} Å"
+print "约束力常数: ${Si_wall_k} eV/Å²"
+print "截断距离: 1.5 Å"
+print "================================"
+
+# ===== 表面分析 =====
+# 使用variable定义表面原子条件
+variable is_surface_atom atom "((type==1)||(type==2))"
+variable surface_z_coord atom "(v_is_surface_atom*c_pos_z)"
+
+# 创建动态表面原子组
+group surface_atoms dynamic all var is_surface_atom every 10
+
+# 表面统计
+compute surface_z_max all reduce max v_surface_z_coord
+compute surface_z_ave all reduce ave v_surface_z_coord
+compute surface_count all reduce sum v_is_surface_atom
+
+run 0
+
+variable surface_z_max_val equal c_surface_z_max
+variable surface_z_ave_val equal c_surface_z_ave
+
+# ===== GCMC区域定义 =====
+# variable z_gcmc_min equal ${surface_z_max_val}-1.0
+# variable z_gcmc_max equal ${surface_z_max_val}+1.0
+
+variable z_gcmc_min equal ${z_min_insert_limit}
+variable z_gcmc_max equal ${z_max_insert_limit}
+
+
+region gcmc_region block ${xlo} ${xhi} ${ylo} ${yhi} ${z_gcmc_min} ${z_gcmc_max}
+
+print "GCMC区域: ${z_gcmc_min} - ${z_gcmc_max} Å"
+
+# ===== 热浴区域 =====
+# variable z_thermo_min equal ${z_gcmc_min}
+variable z_thermo_min equal ${z_min_limit}
+variable z_thermo_max equal 50.0
+
+# 使用variable定义热浴原子条件
+# variable is_thermo_atom atom "(z>=v_z_thermo_min)&&(z<=v_z_thermo_max)&&(type==3)"
+variable is_thermo_atom atom "(z>=v_z_thermo_min)&&(z<=v_z_thermo_max)"
+# 创建动态热浴原子组
+group thermo_atoms dynamic all var is_thermo_atom every 10
+compute 3 thermo_atoms temp
+
+# ===== 配位数计算 =====
+compute coord_OO all coord/atom cutoff ${O_O_cutoff} 2*2 2*3 3*3
+compute coord_SiO all coord/atom cutoff ${Si_O_cutoff} 1*2 1*3
+
+# ===== 使用variable定义各种原子类型 =====
+
+# 基本原子类型判断
+variable is_Si atom "(type==1)"
+variable is_O_surf atom "(type==2)"
+variable is_O_ads atom "(type==3)"
+variable is_any_O atom "((type==2)||(type==3))"
+
+run 0
+
+# 定义总配位数（各列之和）
+variable coord_OO_total atom "(c_coord_OO[1]+c_coord_OO[2]+c_coord_OO[3])"
+variable coord_SiO_total atom "(c_coord_SiO[1]+c_coord_SiO[2])"
+
+# 配位相关原子类型（使用总配位数）
+variable is_gaseous_O2 atom "(v_is_any_O&&(v_coord_OO_total==1)&&(v_coord_SiO_total==0))"
+variable is_surface_OO atom "(v_is_any_O&&(v_coord_OO_total>0)&&(v_coord_SiO_total>0))"
+variable is_isolated_O atom "(v_is_O_ads&&(v_coord_OO_total==0))"
+variable is_bridging_O atom "(v_is_O_ads&&v_is_surface_OO)"
+
+# 配位数分布（修正：使用总配位数）
+variable has_0_OO atom "(v_is_any_O&&(v_coord_OO_total==0))"
+variable has_1_OO atom "(v_is_any_O&&(v_coord_OO_total==1))"
+variable has_2_OO atom "(v_is_any_O&&(v_coord_OO_total==2))"
+variable has_3plus_OO atom "(v_is_any_O&&(v_coord_OO_total>=3))"
+
+variable has_0_SiO atom "(v_is_any_O&&(v_coord_SiO_total==0))"
+variable has_1_SiO atom "(v_is_any_O&&(v_coord_SiO_total==1))"
+variable has_2_SiO atom "(v_is_any_O&&(v_coord_SiO_total==2))"
+variable has_3plus_SiO atom "(v_is_any_O&&(v_coord_SiO_total>=3))"
+
+# 表面保护相关
+variable too_close_surface atom "v_is_O_ads && z<(v_surface_z_max_val+v_surface_buffer)"
+
+# ===== 创建动态组 =====
+
+# 基本原子类型组
+group Si_atoms_dyn dynamic all var is_Si every 10
+group O_surf_atoms_dyn dynamic all var is_O_surf every 10
+group O_ads_atoms_dyn dynamic all var is_O_ads every 10
+group O_all_atoms_dyn dynamic all var is_any_O every 10
+
+# 配位相关组
+group gaseous_O2_atoms dynamic all var is_gaseous_O2 every 10
+group surface_OO_atoms dynamic all var is_surface_OO every 10
+group isolated_O_atoms dynamic all var is_isolated_O every 10
+group bridging_O_atoms dynamic all var is_bridging_O every 10
+
+# 配位分布组
+group OO_0_atoms dynamic all var has_0_OO every 10
+group OO_1_atoms dynamic all var has_1_OO every 10
+group OO_2_atoms dynamic all var has_2_OO every 10
+group OO_3plus_atoms dynamic all var has_3plus_OO every 10
+
+group SiO_0_atoms dynamic all var has_0_SiO every 10
+group SiO_1_atoms dynamic all var has_1_SiO every 10
+group SiO_2_atoms dynamic all var has_2_SiO every 10
+group SiO_3plus_atoms dynamic all var has_3plus_SiO every 10
+
+# 表面保护组
+group O_near_surface dynamic all var too_close_surface every 10
+
+# ===== 能量计算 =====
+compute pe_atom all pe/atom
+compute ke_atom all ke/atom
+
+# 对各个动态组进行能量统计
+compute pe_total all reduce sum c_pe_atom
+compute ke_total all reduce sum c_ke_atom
+compute pe_ave all reduce ave c_pe_atom
+
+# 吸附O原子的能量统计
+compute pe_O_ads_total O_ads_atoms_dyn reduce sum c_pe_atom
+compute ke_O_ads_total O_ads_atoms_dyn reduce sum c_ke_atom
+compute pe_O_ads_ave O_ads_atoms_dyn reduce ave c_pe_atom
+
+# 各种特殊原子组的能量统计
+compute pe_isolated_total isolated_O_atoms reduce sum c_pe_atom
+compute pe_bridging_total bridging_O_atoms reduce sum c_pe_atom
+
+# ===== 吸附位点分类 =====
+variable pe_threshold equal -2.0
+variable is_strong_site atom "(v_is_O_ads&&(c_pe_atom<v_pe_threshold)&&(v_coord_OO_total==0))"
+variable is_weak_site atom "(v_is_O_ads&&(c_pe_atom>=v_pe_threshold)&&(v_coord_OO_total==0))"
+
+group strong_sites dynamic all var is_strong_site every 10
+group weak_sites dynamic all var is_weak_site every 10
+
+# ===== 空间分布统计（使用variable和动态组） =====
+# 吸附O原子的空间分布
+variable z_O_ads_coord atom "(v_is_O_ads*c_pos_z)"
+variable z_O_ads_valid atom "(v_is_O_ads*c_pos_z+(!v_is_O_ads)*1000000)"
+variable z_O_ads_max_coord atom "(v_is_O_ads*c_pos_z)"
+
+compute z_O_ads_sum all reduce sum v_z_O_ads_coord
+compute z_O_ads_min all reduce min v_z_O_ads_valid
+compute z_O_ads_max all reduce max v_z_O_ads_max_coord
+
+# 距离表面的高度
+variable height_above_surface atom "(v_is_O_ads*(c_pos_z-v_surface_z_max_val))"
+compute height_sum all reduce sum v_height_above_surface
+compute height_max all reduce max v_height_above_surface
+
+# ===== 配位数统计计算 =====
+# 计算O原子的配位数总和（用于平均值计算）
+variable OO_coord_sum_atom atom "(v_is_any_O*v_coord_OO_total)"
+variable SiO_coord_sum_atom atom "(v_is_any_O*v_coord_SiO_total)"
+
+compute OO_coord_sum all reduce sum v_OO_coord_sum_atom
+compute SiO_coord_sum all reduce sum v_SiO_coord_sum_atom
+
+# ===== 统计函数 =====
+# 使用count()函数统计各动态组的原子数
+variable n_Si equal count(Si_atoms_dyn)
+variable n_O_surf equal count(O_surf_atoms_dyn)
+variable n_O_ads equal count(O_ads_atoms_dyn)
+variable n_O_total equal count(O_all_atoms_dyn)
+
+variable n_gaseous_O2_atoms equal count(gaseous_O2_atoms)
+variable n_gaseous_O2_pairs equal v_n_gaseous_O2_atoms/2.0
+
+variable n_surface_OO equal count(surface_OO_atoms)
+variable n_isolated_O equal count(isolated_O_atoms)
+variable n_bridging_O equal count(bridging_O_atoms)
+
+variable n_strong_sites equal count(strong_sites)
+variable n_weak_sites equal count(weak_sites)
+
+# 配位分布统计
+variable n_0_OO equal count(OO_0_atoms)
+variable n_1_OO equal count(OO_1_atoms)
+variable n_2_OO equal count(OO_2_atoms)
+variable n_3plus_OO equal count(OO_3plus_atoms)
+
+variable n_0_SiO equal count(SiO_0_atoms)
+variable n_1_SiO equal count(SiO_1_atoms)
+variable n_2_SiO equal count(SiO_2_atoms)
+variable n_3plus_SiO equal count(SiO_3plus_atoms)
+
+variable n_too_close equal count(O_near_surface)
+
+# 其他统计量
+variable n_fixed equal count(fixed_atoms)
+variable n_thermo equal count(thermo_atoms)
+variable n_surface equal count(surface_atoms)
+
+# ===== 覆盖度计算 =====
+variable surface_area equal (${xhi}-${xlo})*(${yhi}-${ylo})
+variable coverage equal v_n_O_ads/${surface_area}
+variable coverage_total equal v_n_O_total/${surface_area}
+
+# ===== 计算统计量的安全函数 =====
+# 平均值计算
+variable pe_O_ads_ave_calc equal "(v_n_O_ads>0.5)*(c_pe_O_ads_ave)+(v_n_O_ads<0.5)*0.0"
+variable z_O_ads_ave_calc equal "(v_n_O_ads>0.5)*(c_z_O_ads_sum/(v_n_O_ads+0.0001))+(v_n_O_ads<0.5)*0.0"
+variable height_ave_calc equal "(v_n_O_ads>0.5)*(c_height_sum/(v_n_O_ads+0.0001))+(v_n_O_ads<0.5)*0.0"
+variable OO_coord_ave_calc equal "(v_n_O_total>0.5)*(c_OO_coord_sum/(v_n_O_total+0.0001))+(v_n_O_total<0.5)*0.0"
+variable SiO_coord_ave_calc equal "(v_n_O_total>0.5)*(c_SiO_coord_sum/(v_n_O_total+0.0001))+(v_n_O_total<0.5)*0.0"
+
+# ===== 总能量计算 =====
+variable e_total equal c_pe_total+c_ke_total
+
+run 0
+
+# ===== 记录初始构型的数据 =====
+variable e_total_init equal ${e_total}
+variable pe_total_init equal c_pe_total
+variable ke_total_init equal c_ke_total
+variable n_O_total_init equal ${n_O_total}
+variable n_O_surf_init equal ${n_O_surf}
+variable n_O_ads_init equal ${n_O_ads}
+
+print "===== 初始构型记录 ====="
+print "初始总能量: ${e_total_init} eV"
+print "初始势能: ${pe_total_init} eV"
+print "初始动能: ${ke_total_init} eV"
+print "初始总O原子数: ${n_O_total_init}"
+print "初始表面O原子数: ${n_O_surf_init}"
+print "初始吸附O原子数: ${n_O_ads_init}"
+print "========================"
+
+# ===== 真实吸附能计算变量 =====
+# 使用动态变量而不是静态值
+variable delta_n_O equal v_n_O_total-${n_O_total_init}
+variable delta_E_total equal v_e_total-${e_total_init}
+variable delta_PE_total equal c_pe_total-${pe_total_init}
+variable delta_KE_total equal c_ke_total-${ke_total_init}
+
+# 真实吸附能 = (系统能量变化 - n*单个O原子能量) / n
+variable delta_E_corrected equal v_delta_E_total-(v_delta_n_O*${E_O_single})
+variable delta_PE_corrected equal v_delta_PE_total-(v_delta_n_O*${E_O_single})
+
+# 平均吸附能（每个新增O原子）- 使用修正后的能量
+variable ads_energy_per_O equal "(v_delta_n_O<0.5)*0.0+(v_delta_n_O>=0.5)*(v_delta_E_corrected/(v_delta_n_O+0.0001))"
+variable ads_PE_per_O equal "(v_delta_n_O<0.5)*0.0+(v_delta_n_O>=0.5)*(v_delta_PE_corrected/(v_delta_n_O+0.0001))"
+
+# ===== 初始GCMC设置（阶段1：快速平衡） =====
+fix mygcmc O_ads_atoms_dyn gcmc ${gcmc_freq} ${gcmc_ninsert_fast} ${gcmc_ndelete_fast} 3 ${seed} ${T} 0.0 ${gcmc_displace} pressure ${P} region gcmc_region tfac_insert 1.0 full_energy 
+
+# fix O_wall_upper O_ads_atoms_dyn wall/harmonic zhi ${z_max_limit} ${O_wall_k} 0.0 1.5 units box pbc yes
+# fix O_wall_lower O_ads_atoms_dyn wall/harmonic zlo ${z_min_limit} ${O_wall_k} 0.0 1.5 units box pbc yes
+
+
+
+# ===== 热力学设置 =====
+# 热浴层使用NVT（1000K）
+# group type3_atoms2 type 3
+# fix thermo_nve type3_atoms2 nve
+# fix thermostat type3_atoms2 temp/csvr ${T} ${T} ${nvt_damp} ${seed}
+# fix_modify thermostat temp 3
+
+
+# fix thermo_nve O_ads_atoms_dyn nve
+# fix thermostat O_ads_atoms_dyn temp/csvr ${T} ${T} ${nvt_damp} ${seed}
+# fix_modify thermostat temp 3
+
+fix thermo_nve thermo_atoms nve
+fix thermostat thermo_atoms temp/csvr ${T} ${T} ${nvt_damp} ${seed}
+fix_modify thermostat temp 3
+
+# ===== 气相O2防止 =====
+fix check_O2 all halt 1 v_n_gaseous_O2_pairs > 0.5 error continue message yes
+
+# ===== 创建输出目录 =====
+shell mkdir restart
+shell mkdir data
+shell mkdir traj
+shell mkdir energy_data
+
+# ===== 时间和统计设置 =====
+variable N_stat loop ${Ntotal}
+variable temp_thermo equal c_3
+
+# ===== 创建输出文件并写入标题 =====
+print "# GCMC吸附数据文件 - 真实吸附能计算（减去单个O原子势能）- 分阶段策略" file energy_data/gcmc_adsorption.dat screen no
+print "# 时间单位：ps，能量单位：eV，密度单位：atoms/Å²" file energy_data/gcmc_adsorption.dat screen no
+print "# 初始总能量: ${e_total_init} eV, 初始O原子数: ${n_O_total_init}" file energy_data/gcmc_adsorption.dat screen no
+print "# 单个O原子势能: ${E_O_single} eV" file energy_data/gcmc_adsorption.dat screen no
+print "# 分阶段策略：0-50ps(ninsert=100), 50-80ps(ninsert=30), 80-100ps(ninsert=10)" file energy_data/gcmc_adsorption.dat screen no
+print "# Time(ps) Cycle Delta_N_O Delta_E_total Ads_E_per_O Delta_PE_total Ads_PE_per_O N_O_ads Coverage N_isolated N_bridging N_strong N_weak N_O2_pairs N_surface_OO Phase" file energy_data/gcmc_adsorption.dat screen no
+
+print "# GCMC配位统计文件" file energy_data/gcmc_coordination.dat screen no
+print "# 时间单位：ps" file energy_data/gcmc_coordination.dat screen no
+print "# Time(ps) Cycle N_0OO N_1OO N_2OO N_3plusOO N_0SiO N_1SiO N_2SiO N_3plusSiO OO_ave SiO_ave" file energy_data/gcmc_coordination.dat screen no
+
+print "# GCMC能量统计文件" file energy_data/gcmc_energy.dat screen no
+print "# 时间单位：ps，能量单位：eV" file energy_data/gcmc_energy.dat screen no
+print "# Time(ps) Cycle PE_total KE_total E_total PE_ave N_atoms Delta_E_from_init" file energy_data/gcmc_energy.dat screen no
+
+print "# GCMC空间分布文件" file energy_data/gcmc_spatial.dat screen no
+print "# 时间单位：ps，距离单位：Å" file energy_data/gcmc_spatial.dat screen no
+print "# Time(ps) Cycle Z_ads_ave Z_ads_min Z_ads_max Height_ave Height_max N_too_close" file energy_data/gcmc_spatial.dat screen no
+
+print "# GCMC原子统计文件" file energy_data/gcmc_atoms.dat screen no
+print "# 时间单位：ps" file energy_data/gcmc_atoms.dat screen no
+print "# Time(ps) Cycle N_Si N_O_surf N_O_ads N_O_total N_fixed N_thermo N_surface Delta_N_O_from_init" file energy_data/gcmc_atoms.dat screen no
+
+print "# GCMC O2监控文件" file energy_data/gcmc_O2_monitor.dat screen no
+print "# 时间单位：ps" file energy_data/gcmc_O2_monitor.dat screen no
+print "# Time(ps) Cycle O2_pairs O2_atoms Surface_OO" file energy_data/gcmc_O2_monitor.dat screen no
+
+# 热力学输出
+thermo 1000
+thermo_style custom step v_temp_thermo atoms v_n_O_ads v_delta_n_O v_ads_energy_per_O c_pe_total c_ke_total v_e_total
+thermo_modify lost warn flush yes
+
+# ===== 记录开始时间 =====
+variable start_time equal time
+
+# ===== 输出第0时刻的数据 =====
+print "====== 输出第0时刻初始数据 ======"
+
+variable current_time_0 equal 0.0
+variable N_stat_0 equal 0
+variable phase_0 equal 1
+
+# 获取第0时刻的值
+variable delta_n_O_0 equal ${delta_n_O}
+variable delta_E_total_0 equal ${delta_E_total}
+variable ads_energy_per_O_0 equal ${ads_energy_per_O}
+variable delta_PE_total_0 equal ${delta_PE_total}
+variable ads_PE_per_O_0 equal ${ads_PE_per_O}
+variable n_O_ads_0 equal ${n_O_ads}
+variable coverage_0 equal ${coverage}
+variable n_isolated_O_0 equal ${n_isolated_O}
+variable n_bridging_O_0 equal ${n_bridging_O}
+variable n_strong_sites_0 equal ${n_strong_sites}
+variable n_weak_sites_0 equal ${n_weak_sites}
+variable n_gaseous_O2_pairs_0 equal ${n_gaseous_O2_pairs}
+variable n_surface_OO_0 equal ${n_surface_OO}
+
+# 配位数据
+variable n_0_OO_0 equal ${n_0_OO}
+variable n_1_OO_0 equal ${n_1_OO}
+variable n_2_OO_0 equal ${n_2_OO}
+variable n_3plus_OO_0 equal ${n_3plus_OO}
+variable n_0_SiO_0 equal ${n_0_SiO}
+variable n_1_SiO_0 equal ${n_1_SiO}
+variable n_2_SiO_0 equal ${n_2_SiO}
+variable n_3plus_SiO_0 equal ${n_3plus_SiO}
+variable OO_coord_ave_0 equal ${OO_coord_ave_calc}
+variable SiO_coord_ave_0 equal ${SiO_coord_ave_calc}
+
+# 能量数据
+variable pe_total_0 equal c_pe_total
+variable ke_total_0 equal c_ke_total
+variable e_total_0 equal ${e_total}
+variable pe_ave_0 equal c_pe_ave
+variable n_atoms_0 equal atoms
+
+# 空间数据
+variable z_ads_ave_0 equal ${z_O_ads_ave_calc}
+variable z_ads_min_0 equal c_z_O_ads_min
+variable z_ads_max_0 equal c_z_O_ads_max
+variable height_ave_0 equal ${height_ave_calc}
+variable height_max_0 equal c_height_max
+variable n_too_close_0 equal ${n_too_close}
+
+# 原子统计
+variable n_Si_0 equal ${n_Si}
+variable n_O_surf_0 equal ${n_O_surf}
+variable n_O_total_0 equal ${n_O_total}
+variable n_fixed_0 equal ${n_fixed}
+variable n_thermo_0 equal ${n_thermo}
+variable n_surface_0 equal ${n_surface}
+
+# 输出第0时刻的数据（添加phase标记）
+print "${current_time_0} ${N_stat_0} ${delta_n_O_0} ${delta_E_total_0} ${ads_energy_per_O_0} ${delta_PE_total_0} ${ads_PE_per_O_0} ${n_O_ads_0} ${coverage_0} ${n_isolated_O_0} ${n_bridging_O_0} ${n_strong_sites_0} ${n_weak_sites_0} ${n_gaseous_O2_pairs_0} ${n_surface_OO_0} ${phase_0}" append energy_data/gcmc_adsorption.dat
+
+print "${current_time_0} ${N_stat_0} ${n_0_OO_0} ${n_1_OO_0} ${n_2_OO_0} ${n_3plus_OO_0} ${n_0_SiO_0} ${n_1_SiO_0} ${n_2_SiO_0} ${n_3plus_SiO_0} ${OO_coord_ave_0} ${SiO_coord_ave_0}" append energy_data/gcmc_coordination.dat
+
+print "${current_time_0} ${N_stat_0} ${pe_total_0} ${ke_total_0} ${e_total_0} ${pe_ave_0} ${n_atoms_0} ${delta_E_total_0}" append energy_data/gcmc_energy.dat
+
+print "${current_time_0} ${N_stat_0} ${z_ads_ave_0} ${z_ads_min_0} ${z_ads_max_0} ${height_ave_0} ${height_max_0} ${n_too_close_0}" append energy_data/gcmc_spatial.dat
+
+print "${current_time_0} ${N_stat_0} ${n_Si_0} ${n_O_surf_0} ${n_O_ads_0} ${n_O_total_0} ${n_fixed_0} ${n_thermo_0} ${n_surface_0} ${delta_n_O_0}" append energy_data/gcmc_atoms.dat
+
+print "${current_time_0} ${N_stat_0} ${n_gaseous_O2_pairs_0} ${n_gaseous_O2_atoms} ${n_surface_OO_0}" append energy_data/gcmc_O2_monitor.dat
+
+# 输出第0时刻的轨迹
+dump dump_init all custom 1 traj/gcmc_${T}K_${P}atm.0.lammpstrj id type x y z vx vy vz fx fy fz c_pe_atom c_coord_OO[*] c_coord_SiO[*]
+dump_modify dump_init sort id element Si O O
+run 0
+undump dump_init
+
+# 输出第0时刻的完整轨迹到主轨迹文件
+dump dump_init_full all custom 1 zz_gcmc_${T}K_${P}atm.lammpstrj id type x y z vx vy vz fx fy fz c_pe_atom c_coord_OO[*] c_coord_SiO[*]
+dump_modify dump_init_full sort id element Si O O
+run 0
+undump dump_init_full
+
+print "第0时刻初始数据输出完成"
+print "====================="
+
+# ===== 定义阶段判断变量 =====
+variable current_phase equal 1
+
+# ===== 主循环 =====
+label stat_loop
+
+print "====================="
+print "Statistics cycle: ${N_stat} / ${Ntotal}"
+variable elapsed equal (time-${start_time})/3600
+variable simtime_ps equal ${N_stat}*${t_per_stat}
+print "Elapsed time: ${elapsed} hours, Simulated time: ${simtime_ps} ps"
+
+# ===== 根据当前周期调整GCMC参数 =====
+# 判断当前处于哪个阶段
+if "${N_stat} <= ${Nphase1}" then &
+   "variable current_phase equal 1" &
+elif "${N_stat} <= ${Nphase2}" &
+   "variable current_phase equal 2" &
+else &
+   "variable current_phase equal 3"
+
+# 根据阶段切换GCMC参数
+if "${current_phase} == 1" then &
+   "print 'Phase 1 (Fast equilibration): using ninsert/delete = ${gcmc_ninsert_fast}'"
+
+if "${current_phase} == 2" then &
+   "print 'Phase 2 (Fine tuning): using ninsert/delete = ${gcmc_ninsert_fine}'"
+   
+if "${current_phase} == 2 && ${N_stat} == $(v_Nphase1+1)" then &
+   "print '====== Switching to Phase 2 (Fine tuning) ======'" &
+   "print 'Changing ninsert/delete from ${gcmc_ninsert_fast} to ${gcmc_ninsert_fine}'" &
+   "unfix mygcmc" &
+   "fix mygcmc O_ads_atoms_dyn gcmc ${gcmc_freq} ${gcmc_ninsert_fine} ${gcmc_ndelete_fine} 3 ${seed} ${T} 0.0 ${gcmc_displace} pressure ${P} region gcmc_region tfac_insert 1.0 full_energy"
+
+if "${current_phase} == 3" then &
+   "print 'Phase 3 (Equilibrium sampling): using ninsert/delete = ${gcmc_ninsert_equil}'"
+   
+if "${current_phase} == 3 && ${N_stat} == $(v_Nphase2+1)" then &
+   "print '====== Switching to Phase 3 (Equilibrium sampling) ======'" &
+   "print 'Changing ninsert/delete from ${gcmc_ninsert_fine} to ${gcmc_ninsert_equil}'" &
+   "unfix mygcmc" &
+   "fix mygcmc O_ads_atoms_dyn gcmc ${gcmc_freq} ${gcmc_ninsert_equil} ${gcmc_ndelete_equil} 3 ${seed} ${T} 0.0 ${gcmc_displace} pressure ${P} region gcmc_region tfac_insert 1.0 full_energy"
+
+# 运行1ps
+run ${n_per_stat}
+
+# ===== 删除超过限制的原子 14-17.5 =====
+# 定义超出边界的区域
+region above_limit block INF INF INF INF ${z_max_limit} INF units box
+region below_limit block INF INF INF INF INF ${z_min_limit} units box
+
+# 先定义type 3原子组
+group type3_atoms type 3
+
+# 定义在该区域内的原子组
+group temp_above_limit region above_limit
+group temp_below_limit region below_limit  
+
+# 创建交集：既在区域内又是type 3的原子组
+group atoms_above_limit intersect temp_above_limit type3_atoms
+group atoms_below_limit intersect temp_below_limit type3_atoms
+
+variable n_above_limit equal count(atoms_above_limit)
+variable n_below_limit equal count(atoms_below_limit)
+
+# 如果有原子超过高度限制，删除它们
+if "${n_above_limit} > 0" then &
+  "print 'WARNING: Found ${n_above_limit} type 3 atoms above ${z_max_limit} A, deleting them...'" &
+  "delete_atoms group atoms_above_limit compress yes" &
+  "print 'Deleted ${n_above_limit} type 3 atoms'" &
+  "reset_atoms id"
+
+# 如果有原子超过高度限制，删除它们
+if "${n_below_limit} > 0" then &
+  "print 'WARNING: Found ${n_below_limit} type 3 atoms below ${z_min_limit} A, deleting them...'" &
+  "delete_atoms group atoms_below_limit compress yes" &
+  "print 'Deleted ${n_below_limit} type 3 atoms'" &
+  "reset_atoms id"
+
+# 清理组和区域定义
+group atoms_above_limit delete
+group atoms_below_limit delete
+group temp_above_limit delete
+group temp_below_limit delete
+group type3_atoms delete
+region above_limit delete
+region below_limit delete
+
+# 重新运行0步以更新所有统计信息
+run 0
+
+# 获取当前时间
+variable current_time_now equal ${simtime_ps}
+
+# 获取当前值
+variable delta_n_O_now equal v_delta_n_O
+variable delta_E_total_now equal v_delta_E_total
+variable delta_E_corrected_now equal v_delta_E_corrected
+variable ads_energy_per_O_now equal v_ads_energy_per_O
+variable delta_PE_total_now equal v_delta_PE_total
+variable delta_PE_corrected_now equal v_delta_PE_corrected
+variable ads_PE_per_O_now equal v_ads_PE_per_O
+variable n_O_ads_now equal v_n_O_ads
+variable coverage_now equal v_coverage
+variable n_isolated_O_now equal ${n_isolated_O}
+variable n_bridging_O_now equal ${n_bridging_O}
+variable n_strong_sites_now equal ${n_strong_sites}
+variable n_weak_sites_now equal ${n_weak_sites}
+variable n_gaseous_O2_pairs_now equal ${n_gaseous_O2_pairs}
+variable n_surface_OO_now equal ${n_surface_OO}
+
+# 配位数据
+variable n_0_OO_now equal ${n_0_OO}
+variable n_1_OO_now equal ${n_1_OO}
+variable n_2_OO_now equal ${n_2_OO}
+variable n_3plus_OO_now equal ${n_3plus_OO}
+variable n_0_SiO_now equal ${n_0_SiO}
+variable n_1_SiO_now equal ${n_1_SiO}
+variable n_2_SiO_now equal ${n_2_SiO}
+variable n_3plus_SiO_now equal ${n_3plus_SiO}
+variable OO_coord_ave_now equal ${OO_coord_ave_calc}
+variable SiO_coord_ave_now equal ${SiO_coord_ave_calc}
+
+# 能量数据
+variable pe_total_now equal c_pe_total
+variable ke_total_now equal c_ke_total
+variable e_total_now equal ${e_total}
+variable pe_ave_now equal c_pe_ave
+variable n_atoms_now equal atoms
+
+# 空间数据
+variable z_ads_ave_now equal ${z_O_ads_ave_calc}
+variable z_ads_min_now equal c_z_O_ads_min
+variable z_ads_max_now equal c_z_O_ads_max
+variable height_ave_now equal ${height_ave_calc}
+variable height_max_now equal c_height_max
+variable n_too_close_now equal ${n_too_close}
+
+# 原子统计
+variable n_Si_now equal ${n_Si}
+variable n_O_surf_now equal ${n_O_surf}
+variable n_O_total_now equal ${n_O_total}
+variable n_fixed_now equal ${n_fixed}
+variable n_thermo_now equal ${n_thermo}
+variable n_surface_now equal ${n_surface}
+
+# 输出数据到文件（包含阶段信息）
+print "${current_time_now} ${N_stat} ${delta_n_O_now} ${delta_E_corrected_now} ${ads_energy_per_O_now} ${delta_PE_corrected_now} ${ads_PE_per_O_now} ${n_O_ads_now} ${coverage_now} ${n_isolated_O_now} ${n_bridging_O_now} ${n_strong_sites_now} ${n_weak_sites_now} ${n_gaseous_O2_pairs_now} ${n_surface_OO_now} ${current_phase}" append energy_data/gcmc_adsorption.dat
+
+print "${current_time_now} ${N_stat} ${n_0_OO_now} ${n_1_OO_now} ${n_2_OO_now} ${n_3plus_OO_now} ${n_0_SiO_now} ${n_1_SiO_now} ${n_2_SiO_now} ${n_3plus_SiO_now} ${OO_coord_ave_now} ${SiO_coord_ave_now}" append energy_data/gcmc_coordination.dat
+
+print "${current_time_now} ${N_stat} ${pe_total_now} ${ke_total_now} ${e_total_now} ${pe_ave_now} ${n_atoms_now} ${delta_E_total_now}" append energy_data/gcmc_energy.dat
+
+print "${current_time_now} ${N_stat} ${z_ads_ave_now} ${z_ads_min_now} ${z_ads_max_now} ${height_ave_now} ${height_max_now} ${n_too_close_now}" append energy_data/gcmc_spatial.dat
+
+print "${current_time_now} ${N_stat} ${n_Si_now} ${n_O_surf_now} ${n_O_ads_now} ${n_O_total_now} ${n_fixed_now} ${n_thermo_now} ${n_surface_now} ${delta_n_O_now}" append energy_data/gcmc_atoms.dat
+
+print "${current_time_now} ${N_stat} ${n_gaseous_O2_pairs_now} ${n_gaseous_O2_atoms} ${n_surface_OO_now}" append energy_data/gcmc_O2_monitor.dat
+
+# 打印关键信息到屏幕（包含阶段信息）
+print "Time=${current_time_now}ps (Phase ${current_phase}): Delta_N_O=${delta_n_O_now}, Ads_E/O=${ads_energy_per_O_now} eV"
+print "  N_ads=${n_O_ads_now}, Coverage=${coverage_now}"
+print "  Energy: System_change=${delta_E_total_now} eV, Corrected=${delta_E_corrected_now} eV"
+print "  Single O contribution: ${delta_n_O_now}*${E_O_single} = $(v_delta_n_O*v_E_O_single) eV"
+print "  True adsorption energy per O: ${ads_energy_per_O_now} eV"
+
+dump 1 all custom 1 zz_gcmc_${T}K_${P}atm.lammpstrj id type x y z vx vy vz fx fy fz c_pe_atom c_coord_OO[*] c_coord_SiO[*]
+dump_modify 1 element Si O O
+dump_modify 1 append yes  # 始终使用append模式，因为第0时刻已经输出
+run 0
+undump 1
+print "Trajectory output at ${simtime_ps} ps"
+
+# 每10ps输出轨迹
+variable remainder_traj equal ${N_stat}%10
+if "${remainder_traj} == 0" then &
+  "dump 1 all custom 1 traj/gcmc_${T}K_${P}atm.${N_stat}.lammpstrj id type x y z vx vy vz fx fy fz c_pe_atom c_coord_OO[*] c_coord_SiO[*]" &
+  "dump_modify 1 sort id element Si O O" &
+  "run 0" &
+  "undump 1" &
+  "print 'Trajectory output at ${simtime_ps} ps'"
+
+# 每20ps保存restart文件
+variable remainder_restart equal ${N_stat}%20
+if "${remainder_restart} == 0" then &
+  "write_restart restart/gcmc_${N_stat}.restart" &
+  "write_data data/gcmc_${N_stat}.lmp" &
+  "print 'Checkpoint saved at ${simtime_ps} ps'"
+
+# 循环控制
+next N_stat
+jump SELF stat_loop
+
+# ===== 最终统计 =====
+print "====== GCMC模拟完成（分阶段策略）======"
+print "===== 最终统计 ====="
+variable total_time equal (time-${start_time})/3600
+variable total_simtime_ps equal ${Ntotal}*${t_per_stat}
+print "总计算时间: ${total_time} hours"
+print "总模拟时间: ${total_simtime_ps} ps"
+print ""
+print "分阶段策略执行情况："
+print "  阶段1（0-${Nphase1} ps）: 快速平衡，ninsert/delete=${gcmc_ninsert_fast}"
+print "  阶段2（${Nphase1}-${Nphase2} ps）: 精细调节，ninsert/delete=${gcmc_ninsert_fine}"
+print "  阶段3（${Nphase2}-${Ntotal} ps）: 平衡采样，ninsert/delete=${gcmc_ninsert_equil}"
+print ""
+print "原子统计："
+print "  Si原子数: ${n_Si_now}"
+print "  表面O原子数: ${n_O_surf_now}"
+print "  吸附O原子数: ${n_O_ads_now}"
+print "  总O原子数: ${n_O_total_now}"
+print "  新增O原子数: ${delta_n_O_now}"
+print ""
+print "能量统计（相对于初始构型）："
+print "  系统总能量变化: ${delta_E_total_now} eV"
+print "  单个O原子贡献: $(v_delta_n_O*v_E_O_single) eV"
+print "  修正后能量变化: ${delta_E_corrected_now} eV"
+if "${delta_n_O_now} > 0" then &
+   "print '  平均吸附能(总能): ${ads_energy_per_O_now} eV/O'" &
+   "print '  平均吸附能(势能): ${ads_PE_per_O_now} eV/O'" &
+   "print '  (已减去单个O原子势能${E_O_single} eV)'"
+print ""
+print "配位统计："
+print "  O-O配位分布: 0=${n_0_OO_now}, 1=${n_1_OO_now}, 2=${n_2_OO_now}, 3+=${n_3plus_OO_now}"
+print "  Si-O配位分布: 0=${n_0_SiO_now}, 1=${n_1_SiO_now}, 2=${n_2_SiO_now}, 3+=${n_3plus_SiO_now}"
+print "  平均配位数: OO=${OO_coord_ave_now}, SiO=${SiO_coord_ave_now}"
+print ""
+print "吸附位点："
+print "  孤立O原子: ${n_isolated_O_now}"
+print "  桥接O原子: ${n_bridging_O_now}"
+print "  强吸附位点: ${n_strong_sites_now}"
+print "  弱吸附位点: ${n_weak_sites_now}"
+print ""
+print "覆盖度："
+print "  吸附覆盖度: ${coverage_now} atoms/Å²"
+print "  总覆盖度: ${coverage_total} atoms/Å²"
+print ""
+print "O2检查："
+print "  气相O2分子数: ${n_gaseous_O2_pairs_now}"
+print "  表面O-O连接数: ${n_surface_OO_now}"
+if "${n_gaseous_O2_pairs_now} > 0.5" then &
+   "print 'WARNING: 检测到气相O2分子！'" &
+else &
+   "print 'SUCCESS: 无气相O2分子'"
+print "====================="
+
+# 保存最终构型
+write_data final_gcmc_${T}K_${P}atm.lmp
+write_restart final_gcmc.restart
+
+# 最终轨迹
+dump final all custom 1 traj/gcmc_${T}K_${P}atm.final.lammpstrj id type x y z vx vy vz fx fy fz c_pe_atom c_coord_OO[*] c_coord_SiO[*] v_is_isolated_O v_is_bridging_O v_is_strong_site v_is_weak_site
+dump_modify final sort id element Si O O
+run 0
+undump final
+
+print "所有数据已保存"
+print "数据文件位于 energy_data/ 目录"
+print "轨迹文件位于 traj/ 目录"
+print "重启文件位于 restart/ 目录"
+print "注意：gcmc_adsorption.dat文件最后一列为阶段标记（1=快速平衡，2=精细调节，3=平衡采样）"
